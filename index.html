@@ -316,48 +316,81 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-const PRODUTOS_NIG = [{"ref":"007541","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TÊNIS VANS TENIS KNU SKOOL","cor":"BEGE CLARO","tamanho":"35"},{"ref":"007498","grupo":"TÊNIS","marca":"VANS","descricao":"VR26 TÊNIS VANS TENIS KNU SKOOL","cor":"AZUL / BRANCO","tamanho":"37"},{"ref":"007497","grupo":"TÊNIS","marca":"VANS","descricao":"INV26 TÊNIS VANS HYLANE","cor":"OFF WHITE / AZUL","tamanho":"36"},{"ref":"007340","grupo":"TÊNIS","marca":"VANS","descricao":"INV26 TÊNIS VANS ULTRARANGE","cor":"PRETO","tamanho":"42"},{"ref":"006876","grupo":"TÊNIS","marca":"VANS","descricao":"VR26 TÊNIS VANS TENIS KNU SKOOL","cor":"BRANCO /  AZUL","tamanho":"36"},{"ref":"006876","grupo":"TÊNIS","marca":"VANS","descricao":"VR26 TÊNIS VANS TENIS KNU SKOOL","cor":"BRANCO /  AZUL","tamanho":"35"},{"ref":"006562","grupo":"TÊNIS","marca":"VANS","descricao":"VERAO26 TÊNIS VANS TENIS HYLANE","cor":"BEGE","tamanho":"35"},{"ref":"005551","grupo":"TÊNIS","marca":"VANS","descricao":"VR25 TENIS VANS SK8 TAPER","cor":"OFF / ROSA","tamanho":"35"},{"ref":"005115","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"PRETO","tamanho":"38"},{"ref":"005115","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"PRETO","tamanho":"36"},{"ref":"005115","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"PRETO","tamanho":"35"},{"ref":"005115","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"PRETO","tamanho":"43"},{"ref":"005115","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"PRETO","tamanho":"34"},{"ref":"005083","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"AZUL","tamanho":"37"},{"ref":"005083","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"AZUL","tamanho":"35"},{"ref":"005083","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"AZUL","tamanho":"34"},{"ref":"004818","grupo":"TÊNIS","marca":"VANS","descricao":"INV24 TENIS VANS ERA","cor":"PRETO / ONÇA","tamanho":"36"},{"ref":"004818","grupo":"TÊNIS","marca":"VANS","descricao":"INV24 TENIS VANS ERA","cor":"PRETO / ONÇA","tamanho":"35"},{"ref":"004817","grupo":"TÊNIS","marca":"VANS","descricao":"INV24 TENIS VANS AUTHENTIC","cor":"SALMÃO","tamanho":"35"},{"ref":"003802","grupo":"TÊNIS","marca":"VANS","descricao":"TENIS VANS OLD SKOOL","cor":"PRETO / BRANCO","tamanho":"36"},{"ref":"007535","grupo":"TÊNIS","marca":"ADIDAS","descricao":"INV26 TÊNIS ADIDAS TENIS SAMBA OG","cor":"PRETO","tamanho":"42"},{"ref":"007535","grupo":"TÊNIS","marca":"ADIDAS","descricao":"INV26 TÊNIS ADIDAS TENIS SAMBA OG","cor":"PRETO","tamanho":"41"},{"ref":"006423","grupo":"TÊNIS","marca":"ADIDAS","descricao":"VERAO26 TÊNIS ADIDAS TENIS SL72 OG W","cor":"BEGE","tamanho":"37"},{"ref":"006331","grupo":"TÊNIS","marca":"ADIDAS","descricao":"INV25 TÊNIS ADIDAS TENIS ADI2000","cor":"ALL BLACK","tamanho":"39"},{"ref":"005512","grupo":"TÊNIS","marca":"ADIDAS","descricao":"VR25 TENIS ADIDAS CAMPUS 00S","cor":"PRETO","tamanho":"37"},{"ref":"005512","grupo":"TÊNIS","marca":"ADIDAS","descricao":"VR25 TENIS ADIDAS CAMPUS 00S","cor":"PRETO","tamanho":"34"},{"ref":"005048","grupo":"TÊNIS","marca":"ADIDAS","descricao":"INV24 TENIS ADIDAS CAMPUS 00S","cor":"PRETO","tamanho":"42"},{"ref":"003759","grupo":"TÊNIS","marca":"ADIDAS","descricao":"TENIS ADIDAS SUPERSTAR","cor":"BRANCO","tamanho":"42"},{"ref":"007406","grupo":"TÊNIS","marca":"CONVERSE","descricao":"INV26 TÊNIS CONVERSE WAVE MOTION","cor":"CINZA / BRANCO","tamanho":"39"},{"ref":"007406","grupo":"TÊNIS","marca":"CONVERSE","descricao":"INV26 TÊNIS CONVERSE WAVE MOTION","cor":"CINZA / BRANCO","tamanho":"37"},{"ref":"007405","grupo":"TÊNIS","marca":"CONVERSE","descricao":"INV26 TÊNIS CONVERSE WAVE MOTION","cor":"PRETO / OFF WHITE","tamanho":"39"},{"ref":"007405","grupo":"TÊNIS","marca":"CONVERSE","descricao":"INV26 TÊNIS CONVERSE WAVE MOTION","cor":"PRETO / OFF WHITE","tamanho":"37"},{"ref":"004943","grupo":"TÊNIS","marca":"CONVERSE","descricao":"PERM TENIS CONVERSE ALL STAR CHUCK TAYLOR","cor":"BRANCO","tamanho":"36"},{"ref":"004943","grupo":"TÊNIS","marca":"CONVERSE","descricao":"PERM TENIS CONVERSE ALL STAR CHUCK TAYLOR","cor":"BRANCO","tamanho":"34"},{"ref":"005240","grupo":"TÊNIS","marca":"REDLEY","descricao":"PERM TENIS REDLEY ORIGINALS","cor":"ALL BLACK","tamanho":"40"},{"ref":"005240","grupo":"TÊNIS","marca":"REDLEY","descricao":"PERM TENIS REDLEY ORIGINALS","cor":"ALL BLACK","tamanho":"39"},{"ref":"005240","grupo":"TÊNIS","marca":"REDLEY","descricao":"PERM TENIS REDLEY ORIGINALS","cor":"ALL BLACK","tamanho":"37"},{"ref":"003171","grupo":"TÊNIS","marca":"REDLEY","descricao":"TENIS REDLEY ORIGINALS","cor":"PRETO","tamanho":"40"},{"ref":"003171","grupo":"TÊNIS","marca":"REDLEY","descricao":"TENIS REDLEY ORIGINALS","cor":"PRETO","tamanho":"35"},{"ref":"003171","grupo":"TÊNIS","marca":"REDLEY","descricao":"TENIS REDLEY ORIGINALS","cor":"PRETO","tamanho":"34"},{"ref":"007484","grupo":"TÊNIS","marca":"NEW BALANCE","descricao":"INV26 TÊNIS NEW BALANCE TENIS 1000","cor":"PRETO / BRANCO","tamanho":"40"},{"ref":"006843","grupo":"TÊNIS","marca":"NEW BALANCE","descricao":"VR26 TÊNIS NEW BALANCE TENIS 1000","cor":"PETROLEO / PRATA","tamanho":"40"},{"ref":"007705","grupo":"CAMISETA","marca":"ADIDAS","descricao":"INV26 CAMISETA ADIDAS CAMISA TREFOIL ESS","cor":"AZUL ESCURO","tamanho":"M"},{"ref":"007628","grupo":"CAMISETA","marca":"ADIDAS","descricao":"INV26 CAMISETA ADIDAS 3S RINGER T","cor":"MARINHO","tamanho":"G"},{"ref":"007628","grupo":"CAMISETA","marca":"ADIDAS","descricao":"INV26 CAMISETA ADIDAS 3S RINGER T","cor":"MARINHO","tamanho":"M"},{"ref":"007277","grupo":"CAMISETA","marca":"ADIDAS","descricao":"INV26 CAMISETA ADIDAS CAMISA 3 STRIPES","cor":"VERMELHO","tamanho":"G"},{"ref":"007237","grupo":"CAMISETA","marca":"ADIDAS","descricao":"VR26 CAMISETA ADIDAS CAMISA TREFOIL ESS","cor":"PRETO","tamanho":"M"},{"ref":"006168","grupo":"CAMISETA","marca":"ADIDAS","descricao":"PERMCAMISETA ADIDAS CAMISA ESSENTIAL","cor":"BRANCO","tamanho":"G"},{"ref":"005692","grupo":"CAMISETA","marca":"ADIDAS","descricao":"VR25 CAMISA ADIDAS TREFOIL ESS","cor":"PRETO","tamanho":"G"},{"ref":"005692","grupo":"CAMISETA","marca":"ADIDAS","descricao":"VR25 CAMISA ADIDAS TREFOIL ESS","cor":"PRETO","tamanho":"M"},{"ref":"005692","grupo":"CAMISETA","marca":"ADIDAS","descricao":"VR25 CAMISA ADIDAS TREFOIL ESS","cor":"PRETO","tamanho":"P"},{"ref":"007750","grupo":"CAMISETA","marca":"THUG NINE","descricao":"COPA 26 CAMISETA THUG NINE FUTEBOL BRASIL","cor":"AMARELO / VERDE","tamanho":"3G"},{"ref":"007294","grupo":"CAMISETA","marca":"THUG NINE","descricao":"INV26 CAMISETA THUG NINE THUG GIF","cor":"UNICA","tamanho":"3G"},{"ref":"007172","grupo":"CAMISETA","marca":"THUG NINE","descricao":"VR26 CAMISETA THUG NINE BOLD PREMIUM","cor":"CINZA","tamanho":"3G"},{"ref":"007172","grupo":"CAMISETA","marca":"THUG NINE","descricao":"VR26 CAMISETA THUG NINE BOLD PREMIUM","cor":"CINZA","tamanho":"GG"},{"ref":"006352","grupo":"CAMISETA","marca":"THUG NINE","descricao":"CAMISETA THUG NINE SHARING","cor":"BEGE","tamanho":"3G"},{"ref":"007788","grupo":"CAMISETA","marca":"CHAMPION","descricao":"INV26 CAMISETA CHAMPION POLO RAGLAN LISTRADA","cor":"AZUL / CINZA","tamanho":"G"},{"ref":"007732","grupo":"CAMISETA","marca":"CHAMPION","descricao":"INV26 CAMISETA CHAMPION POLO RAGLAN JACKARD","cor":"PRETO / VINHO","tamanho":"G"},{"ref":"007456","grupo":"CAMISETA","marca":"CHAMPION","descricao":"INV26 CAMISETA CHAMPION BOXY NANO TEXT","cor":"PRETO","tamanho":"G"},{"ref":"004752","grupo":"CAMISETA","marca":"CHAMPION","descricao":"PERM CAMISA CHAMPION TEE SCRIPT BORDADO","cor":"PRETO","tamanho":"M"},{"ref":"007884","grupo":"CAMISETA","marca":"NIKE","descricao":"COPA 26 CAMISETA NIKE CAMISA JOGO 1 BRASIL","cor":"AMARELO","tamanho":"3G"},{"ref":"007775","grupo":"CAMISETA","marca":"NIKE","descricao":"INV26 CAMISETA NIKE NSW AUTHRZD PERS","cor":"PRETO","tamanho":"G"},{"ref":"007223","grupo":"CAMISETA","marca":"NIKE","descricao":"VR26 CAMISETA NIKE CAMISA NSW TEE M90","cor":"PRETO","tamanho":"P"},{"ref":"002022","grupo":"CAMISETA","marca":"NIKE","descricao":"CAMISA POLO NIKE ALGODÃO","cor":"PRETO","tamanho":"G"},{"ref":"002022","grupo":"CAMISETA","marca":"NIKE","descricao":"CAMISA POLO NIKE ALGODÃO","cor":"PRETO","tamanho":"M"},{"ref":"007786","grupo":"CAMISETA","marca":"HIGH","descricao":"INV26 CAMISETA HIGH INTERLOCK","cor":"PRETO","tamanho":"M"},{"ref":"007785","grupo":"CAMISETA","marca":"HIGH","descricao":"INV26 CAMISETA HIGH ALICE FRONT","cor":"PRETO","tamanho":"M"},{"ref":"007917","grupo":"CAMISETA","marca":"APPROVE","descricao":"INV26 CAMISETA APPROVE HUGE MADONA","cor":"MARROM","tamanho":"G"},{"ref":"006234","grupo":"CAMISETA","marca":"APPROVE","descricao":"CAMISETA APPROVE CAMISA HUGE HOLY GRAIL","cor":"PRETO","tamanho":"G"},{"ref":"007906","grupo":"CAMISETA","marca":"DUBS","descricao":"INV26 CAMISETA DUBS STUDIO","cor":"OFF WHITE","tamanho":"G"},{"ref":"007012","grupo":"CAMISETA","marca":"FARM","descricao":"VR26 CAMISETA FARM IPANEMA","cor":"OFF WHITE","tamanho":"P"},{"ref":"006618","grupo":"CAMISETA","marca":"BAW","descricao":"VERAO26 CAMISETA BAW CAMISA REGULAR GOTH","cor":"PRETO","tamanho":"M"},{"ref":"006402","grupo":"CAMISETA","marca":"FILA","descricao":"INV25 CAMISETA FILA CAMISA COMFORT","cor":"PRETO","tamanho":"M"},{"ref":"006076","grupo":"CAMISETA","marca":"MONS","descricao":"INV25 CAMISETA MONS BASICA","cor":"PRETO","tamanho":"G"},{"ref":"007701","grupo":"CHINELO","marca":"KENNER","descricao":"INV26 CHINELO KENNER RAKKA NYLON","cor":"AZUL","tamanho":"38"},{"ref":"007701","grupo":"CHINELO","marca":"KENNER","descricao":"INV26 CHINELO KENNER RAKKA NYLON","cor":"AZUL","tamanho":"37"},{"ref":"007201","grupo":"CHINELO","marca":"KENNER","descricao":"VR26 CHINELO KENNER COLLAB L7 ORAK","cor":"PRETO","tamanho":"42"},{"ref":"007201","grupo":"CHINELO","marca":"KENNER","descricao":"VR26 CHINELO KENNER COLLAB L7 ORAK","cor":"PRETO","tamanho":"41"},{"ref":"007021","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER RAKKA ULTRA FULL FORCE","cor":"PRETO","tamanho":"43"},{"ref":"007021","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER RAKKA ULTRA FULL FORCE","cor":"PRETO","tamanho":"42"},{"ref":"007021","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER RAKKA ULTRA FULL FORCE","cor":"PRETO","tamanho":"41"},{"ref":"007021","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER RAKKA ULTRA FULL FORCE","cor":"PRETO","tamanho":"39"},{"ref":"004788","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER RAKKA ULTRA FULL FORCE","cor":"BRANCO / PRETO / KHAKI","tamanho":"40"},{"ref":"004787","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER KIVAH FULL FORCE","cor":"PRETO / METAL","tamanho":"38"},{"ref":"004052","grupo":"CHINELO","marca":"KENNER","descricao":"CHINELO KENNER RAKKA FREQUENCIA L7","cor":"PRETO / DOURADO","tamanho":"42"},{"ref":"003936","grupo":"CHINELO","marca":"KENNER","descricao":"CHINEO KENNER RAKKA L7 FORCE","cor":"ALL BLACK","tamanho":"44"},{"ref":"006189","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM SANDALIA SALTO RASTEIRO PLASTI","cor":"BEGE / ROXO","tamanho":"34"},{"ref":"006175","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM SANDALIA SALTO RASTEIRO PLASTICO","cor":"AZUL BB","tamanho":"34"},{"ref":"006083","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM CHINELO SALTO RASTEIRO","cor":"OFF WHITE / AZUL","tamanho":"34"},{"ref":"006066","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM SANDALIA SALTO RASTEIRO","cor":"PRETO","tamanho":"36"},{"ref":"005934","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM SANDALIA SALTO RASTEIRO PLASTI","cor":"OFF WHITE / AZUL","tamanho":"34"},{"ref":"005909","grupo":"CHINELO","marca":"FARM","descricao":"INV25 FARM SANDALIA SALTO RASTEIRO","cor":"AZUL BB","tamanho":"33"},{"ref":"005716","grupo":"CHINELO","marca":"FARM","descricao":"INV24 CHINELO FARM","cor":"PRETO / BRANCO","tamanho":"34"},{"ref":"005713","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM SALTO RASTEIRO","cor":"PRETO / BRANCO","tamanho":"34"},{"ref":"005270","grupo":"CHINELO","marca":"FARM","descricao":"VR25 CHINELO FARM PRAIANA EST RIO","cor":"PRETO","tamanho":"40"},{"ref":"007081","grupo":"CHINELO","marca":"THUG NINE","descricao":"CHINELO THUG NINE NUVEM","cor":"MARROM","tamanho":"43"},{"ref":"007081","grupo":"CHINELO","marca":"THUG NINE","descricao":"CHINELO THUG NINE NUVEM","cor":"MARROM","tamanho":"39"},{"ref":"007003","grupo":"CHINELO","marca":"THUG NINE","descricao":"VR26 CHINELO THUG NINE CLOUD PRO","cor":"CINZA","tamanho":"42"},{"ref":"007002","grupo":"CHINELO","marca":"THUG NINE","descricao":"VR26 CHINELO THUG NINE CLOUD PRO","cor":"BEGE / PALHA","tamanho":"40"},{"ref":"006127","grupo":"CHINELO","marca":"THUG NINE","descricao":"INV25 CHINELO THUG NINE CHINELO NUVEM 2","cor":"MARROM","tamanho":"44"},{"ref":"006127","grupo":"CHINELO","marca":"THUG NINE","descricao":"INV25 CHINELO THUG NINE CHINELO NUVEM 2","cor":"MARROM","tamanho":"40"},{"ref":"007248","grupo":"CHINELO","marca":"ADIDAS","descricao":"VR26 CHINELO ADIDAS CAMPUS 00S","cor":"KHAKI","tamanho":"36"},{"ref":"006334","grupo":"CHINELO","marca":"ADIDAS","descricao":"INV25 CHINELO ADIDAS CHINELO ADILETTE 22","cor":"CHUMBO","tamanho":"44"},{"ref":"003424","grupo":"CHINELO","marca":"ADIDAS","descricao":"CHINELO ADIDAS ADILETE","cor":"PRETO / BRANCO","tamanho":"44"},{"ref":"006874","grupo":"CHINELO","marca":"CHAMPION","descricao":"VR26 CHINELO CHAMPION SPHERIC II CLASSIC","cor":"CINZA","tamanho":"42"},{"ref":"006874","grupo":"CHINELO","marca":"CHAMPION","descricao":"VR26 CHINELO CHAMPION SPHERIC II CLASSIC","cor":"CINZA","tamanho":"41"},{"ref":"005662","grupo":"CHINELO","marca":"NIKE","descricao":"PERM CHINELO NIKE CALM SLIDE","cor":"VERDE MUSGO","tamanho":"40,5"},{"ref":"004813","grupo":"CHINELO","marca":"NIKE","descricao":"UN SLIDE NIKE AIR MAX CIRRO","cor":"BRANCO / AZUL","tamanho":"39"},{"ref":"000995","grupo":"CHINELO","marca":"NIKE","descricao":"CHINELO SLIDE NIKE VICTORI ONE","cor":"PRETO","tamanho":"43"},{"ref":"000995","grupo":"CHINELO","marca":"NIKE","descricao":"CHINELO SLIDE NIKE VICTORI ONE","cor":"PRETO","tamanho":"40,5"},{"ref":"007666","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"INV26 BOLSINHA ME LEVA FARM LENÇO MAGIA","cor":"UNICA","tamanho":"UN"},{"ref":"007665","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"INV26 BOLSINHA ME LEVA FARM FLOREJO","cor":"UNICA","tamanho":"UN"},{"ref":"007552","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"INV26 BOLSINHA ME LEVA FARM TUCANO","cor":"COLORIDO","tamanho":"UN"},{"ref":"007320","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"INV26 BOLSINHA ME LEVA FARM ESPORTE SUNSET","cor":"UNICA","tamanho":"UN"},{"ref":"007319","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"INV26 BOLSINHA ME LEVA FARM URBANO","cor":"UNICA","tamanho":"UN"},{"ref":"006467","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"VERAO26 BOLSINHA ME LEVA FARM FLOR DE BANANA PRETO","cor":"PRETO / COLORIDO","tamanho":"UN"},{"ref":"007296","grupo":"SHORT 1","marca":"CHAMPION","descricao":"INV26 SHORT 1 CHAMPION CHAMPION GIF","cor":"UNICA","tamanho":"P"},{"ref":"006965","grupo":"SHORT 1","marca":"RAFROW","descricao":"BST 7 SHORT 1 RAFROW SHORT LINHO","cor":"CINZA","tamanho":"GG"},{"ref":"005540","grupo":"SHORT 1","marca":"THUG NINE","descricao":"VR25 SHORT THUG NINE TRAIL","cor":"OFF WHITE","tamanho":"G"},{"ref":"004665","grupo":"SHORT 1","marca":"NIKE","descricao":"PERM SHORT NIKE CLUB FLOW","cor":"PRETO","tamanho":"G"},{"ref":"007594","grupo":"NECESSARIE CACULA","marca":"FARM","descricao":"INV26 NECESSARIE CACULA FARM ESPORTE TRILHA","cor":"UNICA","tamanho":"UN"},{"ref":"007138","grupo":"NECESSARIE CACULA","marca":"FARM","descricao":"NECESSAIRE FARM CACULA ESPORTE COPATUCAN","cor":"UNICA","tamanho":"UN"},{"ref":"007083","grupo":"NECESSARIE CACULA","marca":"FARM","descricao":"NECESSAIRE FARM CACULA ESTUDANTE MEMORIA","cor":"UNICA","tamanho":"UN"},{"ref":"007681","grupo":"GARRAFA ETC 850ML","marca":"FARM","descricao":"INV26 GARRAFA ETC 850ML FARM WELLNESS","cor":"UNICA","tamanho":"UN"},{"ref":"007675","grupo":"GARRAFA ETC 850ML","marca":"FARM","descricao":"INV26 GARRAFA ETC 850ML FARM FESTA DE ONÇA","cor":"UNICA","tamanho":"UN"},{"ref":"007582","grupo":"BOLSA CHUCHU","marca":"FARM","descricao":"INV26 BOLSA CHUCHU FARM LENÇO MAGIA","cor":"UNICA","tamanho":"UN"},{"ref":"007568","grupo":"BOLSA CHUCHU","marca":"FARM","descricao":"INV26 BOLSA CHUCHU FARM ESPORTE RELEVO CARIOCA","cor":"UNICA","tamanho":"UN"},{"ref":"007715","grupo":"BOLSA","marca":"ADIDAS","descricao":"INV26 BOLSA ADIDAS ADICOLOR","cor":"MARROM / ROSA","tamanho":"UN"},{"ref":"006259","grupo":"BOLSA","marca":"ADIDAS","descricao":"INV25 BOLSA ADIDAS BOLSA ADICOLOR BB XS","cor":"PRETO","tamanho":"UN"},{"ref":"006664","grupo":"KIT MOSQUETOES","marca":"FARM","descricao":"VERAO26 KIT MOSQUETOES FARM KIT MOSQUETOES","cor":"PRETO","tamanho":"UN"},{"ref":"006663","grupo":"KIT MOSQUETOES","marca":"FARM","descricao":"VERAO26 KIT MOSQUETOES FARM KIT MOSQUETOES","cor":"AMARELO","tamanho":"UN"},{"ref":"007271","grupo":"BONE","marca":"ADIDAS","descricao":"INV26 BONE ADIDAS LIGHT W SPW","cor":"PRETO","tamanho":"UN"},{"ref":"002152","grupo":"BONE","marca":"NEW ERA","descricao":"PERM BONE NEW ERA 920 ST PERMANENTE","cor":"PRETO","tamanho":"UN"},{"ref":"007685","grupo":"MAXI NECESSAIRE ORA BOLAS G","marca":"FARM","descricao":"INV26 MAXI NECESSAIRE ORA BOLAS G FARM FESTA DE ONÇA","cor":"UNICA","tamanho":"UN"},{"ref":"007614","grupo":"GARRAFA QUE SEDE 750ML","marca":"FARM","descricao":"INV26 GARRAFA QUE SEDE 750ML FARM GUACANASTE","cor":"UNICA","tamanho":"UN"},{"ref":"007360","grupo":"GARRAFA ETC 650ML","marca":"FARM","descricao":"INV26 GARRAFA ETC 650ML FARM URBANO SEMANA DE ARTE","cor":"UNICA","tamanho":"UN"},{"ref":"007358","grupo":"GARRAFA QUE SEDE 500ML","marca":"FARM","descricao":"INV26 GARRAFA QUE SEDE 500ML FARM UNIVERSITARIA","cor":"UNICA","tamanho":"UN"},{"ref":"007323","grupo":"MINI COOLER FAROFA","marca":"FARM","descricao":"INV26 MINI COOLER FAROFA FARM PRAIA BAHIA CHEIRO","cor":"UNICA","tamanho":"UN"},{"ref":"007308","grupo":"BOLSA DA GEMA","marca":"FARM","descricao":"INV26 BOLSA DA GEMA FARM PRAIA BAHIA CHEIRO","cor":"UNICA","tamanho":"UN"},{"ref":"007101","grupo":"NECESSAIRE ZIRIGUIDUM","marca":"FARM","descricao":"NECESSAIRE FARM ZIRIGUIDUM VIAJANTE SELO","cor":"UNICA","tamanho":"UN"},{"ref":"006784","grupo":"CAIXA DE FOSFORO","marca":"FARM","descricao":"VR26 CAIXA DE FOSFORO FARM EL NAMORADOS","cor":"VERMELHO","tamanho":"UN"},{"ref":"006778","grupo":"PORTA INCENSO ASTRAL","marca":"FARM","descricao":"VR26 PORTA INCENSO ASTRAL FARM CORAÇÃO","cor":"ROSE","tamanho":"UN"},{"ref":"006733","grupo":"GARRAFA GLUB GLUB 1L","marca":"FARM","descricao":"VR26 GARRAFA GLUB GLUB 1L FARM FLOR DE BANANA PRETO","cor":"PRETO / COLORIDO","tamanho":"UN"},{"ref":"006658","grupo":"MAXI NECESSARIE ORA BOLAS","marca":"FARM","descricao":"VERAO26 MAXI NECESSARIE ORA BOLAS FARM ARARA LISTRADO","cor":"BRANCO / AZUL","tamanho":"UN"},{"ref":"006607","grupo":"CADERNO UNIVERSITARIO","marca":"FARM","descricao":"VERAO26 CADERNO UNIVERSITARIO FARM BOSSA BANANA","cor":"PRETO / AMARELO","tamanho":"UN"},{"ref":"006537","grupo":"GARRAFA GLUB GLUB 750ML","marca":"FARM","descricao":"VERAO26 GARRAFA GLUB GLUB 750ML FARM BRASIL DE COR","cor":"COLORIDO","tamanho":"UN"},{"ref":"004653","grupo":"MEIA","marca":"UNICO","descricao":"BST 2 UNICO MEIA INVISIVEL 2","cor":"UNICA","tamanho":"UN"}];
 // ═══════════════════════════════════════════════════════════════
 // SELETO — Sistema de Conferência de Inventário
 // Arquitetura Supabase-ready: toda persistência via DB_ADAPTER
 // ═══════════════════════════════════════════════════════════════
 
-// ── DB ADAPTER (localStorage agora → Supabase depois) ──────────
-const DB = {
-  save(key, val) { try { localStorage.setItem('seleto_'+key, JSON.stringify(val)); } catch(e){} },
-  load(key, def) { try { const v=localStorage.getItem('seleto_'+key); return v?JSON.parse(v):def; } catch(e){ return def; } },
-  remove(key) { try { localStorage.removeItem('seleto_'+key); } catch(e){} }
-};
+// ── SUPABASE CLIENT ──────────────────────────────────────────────
+const SUPABASE_URL = 'https://fdrmxnkqrmhlpakxouhj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_76PNWv950QGki7CNrsSGPg_9EkGK4sd';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ── ESTADO GLOBAL ───────────────────────────────────────────────
-let LOJAS = DB.load('lojas', {
-  'americas':    { nome:'Américas',    senha:'ame2026',  produtos:[], state:{active:false,completed:false,resultados:null} },
-  'nova-iguacu': { nome:'Nova Iguaçu', senha:'nig2026',  produtos:PRODUTOS_NIG, state:{active:false,completed:false,resultados:null} },
-  'taquara':     { nome:'Taquara',     senha:'tq2026',   produtos:[], state:{active:false,completed:false,resultados:null} },
-  'aerotown':    { nome:'Aerotown',    senha:'aero2026', produtos:[], state:{active:false,completed:false,resultados:null} },
-});
-
-// Restaurar produtos NIG se veio vazio do localStorage
-if (LOJAS['nova-iguacu'] && LOJAS['nova-iguacu'].produtos.length === 0) {
-  LOJAS['nova-iguacu'].produtos = PRODUTOS_NIG;
+function showLoadError(etapa, err) {
+  console.error(etapa, err);
+  const loginBox=document.querySelector('#screen-login .login-box');
+  if(loginBox){
+    loginBox.innerHTML = `<div style="padding:20px 0">
+      <div style="font-weight:700;color:var(--red);margin-bottom:10px">Erro ao carregar "${etapa}"</div>
+      <div style="font-size:12px;color:var(--grey-600);word-break:break-word;white-space:pre-wrap;background:var(--grey-100);padding:12px;border-radius:6px">${JSON.stringify(err,null,2)}</div>
+    </div>`;
+  }
 }
 
-// Histórico: { [lojaId]: [ { id, data, hora, rodada, gestor, produtos:[], resumo:{} } ] }
-let HISTORICO = DB.load('historico', {});
+// ── ESTADO GLOBAL (espelho em memória, sincronizado com o Supabase) ──
+let LOJAS = {};       // { [id]: { nome, senha, produtos:[], state:{active,completed,resultados} } }
+let HISTORICO = {};   // { [lojaId]: [ { id, rodada, tipo, data, hora, gestor, totalProdutos, resumo:{}, produtos:[] } ] }
 
 const ADMIN_SENHA = 'seleto10k';
 let currentUser = null, currentProducts = [], resultadoAll = [];
 let selectedFile = null, currentRecontagem = false, contagem_anterior = null;
 
-function saveState() {
-  // Não salva os produtos NIG no localStorage (muito grande), restaura do código
-  const lojasSave = {};
-  Object.entries(LOJAS).forEach(([id,l]) => {
-    lojasSave[id] = { ...l, produtos: id==='nova-iguacu' ? [] : l.produtos };
+// ── CARREGAMENTO INICIAL: puxa tudo do Supabase para a memória ───
+async function loadAllFromSupabase() {
+  const { data: lojasRows, error: e1 } = await sb.from('lojas').select('*').order('created_at');
+  if (e1) { showLoadError('lojas', e1); return; }
+
+  const { data: produtosRows, error: e2 } = await sb.from('produtos').select('*');
+  if (e2) { showLoadError('produtos', e2); return; }
+
+  const { data: histRows, error: e3 } = await sb.from('historico_contagens').select('*').order('rodada');
+  if (e3) { showLoadError('historico_contagens', e3); return; }
+
+  const { data: histProdRows, error: e4 } = await sb.from('historico_produtos').select('*');
+  if (e4) { showLoadError('historico_produtos', e4); return; }
+
+  LOJAS = {};
+  lojasRows.forEach(l => {
+    LOJAS[l.id] = {
+      nome: l.nome, senha: l.senha,
+      produtos: produtosRows.filter(p => p.loja_id === l.id).map(p => ({
+        ref:p.ref, grupo:p.grupo, marca:p.marca, descricao:p.descricao, cor:p.cor, tamanho:p.tamanho,
+        contada:p.contada, estoque:p.estoque, diferenca:p.diferenca
+      })),
+      state: { active: l.active, completed: l.completed, resultados: null }
+    };
   });
-  DB.save('lojas', lojasSave);
-  DB.save('historico', HISTORICO);
+
+  HISTORICO = {};
+  histRows.forEach(h => {
+    if (!HISTORICO[h.loja_id]) HISTORICO[h.loja_id] = [];
+    const produtos = histProdRows.filter(hp => hp.contagem_id === h.id).map(hp => ({
+      ref:hp.ref, grupo:hp.grupo, marca:hp.marca, descricao:hp.descricao, cor:hp.cor, tamanho:hp.tamanho,
+      fisico:hp.fisico, sistema:hp.sistema, diverg:hp.diverg
+    }));
+    HISTORICO[h.loja_id].push({
+      id: h.id, rodada: h.rodada, tipo: h.tipo, data: h.data_str, hora: h.hora_str,
+      dataISO: h.data_iso, gestor: h.gestor, totalProdutos: h.total_produtos,
+      resumo: { conferidos:h.resumo_conferidos, faltando:h.resumo_faltando, sobrando:h.resumo_sobrando, saldo:h.resumo_saldo },
+      produtos
+    });
+    // A última contagem completa vira o "resultados" atual da loja
+    if (LOJAS[h.loja_id] && LOJAS[h.loja_id].state.completed) {
+      LOJAS[h.loja_id].state.resultados = produtos;
+    }
+  });
 }
 
 // ── TELAS ───────────────────────────────────────────────────────
@@ -410,7 +443,7 @@ function doLogin() {
   }
   currentUser={loja,nome:l.nome}; showGestorScreen(loja,l.produtos,false);
 }
-document.getElementById('login-senha').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
 
 // ── ADMIN ───────────────────────────────────────────────────────
 function showAdminScreen() { populateSelects(); renderStoreStatus(); renderLojasCadastradas(); switchTab('tab-lojas',document.querySelectorAll('.admin-tab')[0]); showScreen('screen-admin'); }
@@ -437,8 +470,18 @@ function renderStoreStatus() {
   }).join('');
 }
 
-function quickActivate(id){LOJAS[id].state.active=true;LOJAS[id].state.completed=false;saveState();renderStoreStatus();}
-function resetStore(id){LOJAS[id].state.active=false;LOJAS[id].state.completed=false;LOJAS[id].state.resultados=null;saveState();renderStoreStatus();}
+async function quickActivate(id){
+  LOJAS[id].state.active=true;LOJAS[id].state.completed=false;
+  renderStoreStatus();
+  const {error}=await sb.from('lojas').update({active:true,completed:false}).eq('id',id);
+  if(error){alert('Erro ao ativar loja: '+error.message);}
+}
+async function resetStore(id){
+  LOJAS[id].state.active=false;LOJAS[id].state.completed=false;LOJAS[id].state.resultados=null;
+  renderStoreStatus();
+  const {error}=await sb.from('lojas').update({active:false,completed:false}).eq('id',id);
+  if(error){alert('Erro ao resetar loja: '+error.message);}
+}
 
 function verResultadoAdmin(id) {
   currentUser={loja:id,nome:LOJAS[id].nome};
@@ -455,7 +498,7 @@ function uploadAndActivate() {
   setMsg(msg,'Lendo arquivo...',null);
   const ext=selectedFile.name.split('.').pop().toLowerCase();
   const reader=new FileReader();
-  reader.onload=function(e){
+  reader.onload=async function(e){
     try{
       let wb;
       if(ext==='csv') wb=XLSX.read(e.target.result,{type:'string'});
@@ -464,8 +507,28 @@ function uploadAndActivate() {
       const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:null});
       const products=parsePDVSheet(raw);
       if(products.length===0){setMsg(msg,'Nenhum produto encontrado.',false);return;}
+
+      setMsg(msg,'Salvando no banco de dados...',null);
+
+      // Remove produtos antigos dessa loja e insere os novos
+      const {error:delErr}=await sb.from('produtos').delete().eq('loja_id',loja);
+      if(delErr){setMsg(msg,'Erro ao limpar produtos antigos: '+delErr.message,false);return;}
+
+      const rowsToInsert=products.map(p=>({
+        loja_id:loja, ref:p.ref, grupo:p.grupo, marca:p.marca, descricao:p.descricao,
+        cor:p.cor, tamanho:p.tamanho, contada:p.contada, estoque:p.estoque, diferenca:p.diferenca
+      }));
+      // Insere em lotes de 500 para evitar payloads gigantes
+      for(let i=0;i<rowsToInsert.length;i+=500){
+        const batch=rowsToInsert.slice(i,i+500);
+        const {error:insErr}=await sb.from('produtos').insert(batch);
+        if(insErr){setMsg(msg,'Erro ao salvar produtos: '+insErr.message,false);return;}
+      }
+
+      const {error:updErr}=await sb.from('lojas').update({active:true,completed:false}).eq('id',loja);
+      if(updErr){setMsg(msg,'Erro ao ativar loja: '+updErr.message,false);return;}
+
       LOJAS[loja].produtos=products; LOJAS[loja].state.active=true; LOJAS[loja].state.completed=false; LOJAS[loja].state.resultados=null;
-      saveState();
       setMsg(msg,`✓ ${products.length} produtos carregados para ${LOJAS[loja].nome}.`,true);
       selectedFile=null; document.getElementById('file-name').textContent=''; document.getElementById('file-input').value='';
       populateSelects(); renderStoreStatus();
@@ -503,17 +566,20 @@ function parsePDVSheet(raw) {
   return products;
 }
 
-function addNewLoja() {
+async function addNewLoja() {
   const nome=document.getElementById('new-loja-nome').value.trim();
   const id=document.getElementById('new-loja-id').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'');
   const senha=document.getElementById('new-loja-senha').value.trim();
   const msg=document.getElementById('new-loja-msg');
   if(!nome||!id||!senha){setMsg(msg,'Preencha todos os campos.',false);return;}
   if(LOJAS[id]||id==='admin'){setMsg(msg,'Este ID já existe.',false);return;}
+  setMsg(msg,'Salvando...',null);
+  const {error}=await sb.from('lojas').insert({id,nome,senha,active:false,completed:false});
+  if(error){setMsg(msg,'Erro ao cadastrar loja: '+error.message,false);return;}
   LOJAS[id]={nome,senha,produtos:[],state:{active:false,completed:false,resultados:null}};
   setMsg(msg,`✓ Loja "${nome}" cadastrada.`,true);
   document.getElementById('new-loja-nome').value=''; document.getElementById('new-loja-id').value=''; document.getElementById('new-loja-senha').value='';
-  saveState(); populateSelects(); renderStoreStatus(); renderLojasCadastradas();
+  populateSelects(); renderStoreStatus(); renderLojasCadastradas();
 }
 
 function renderLojasCadastradas() {
@@ -524,7 +590,12 @@ function renderLojasCadastradas() {
     </div>`).join('');
 }
 
-function removeLoja(id){if(!confirm(`Remover "${LOJAS[id].nome}"?`))return;delete LOJAS[id];delete HISTORICO[id];saveState();populateSelects();renderStoreStatus();renderLojasCadastradas();}
+async function removeLoja(id){
+  if(!confirm(`Remover "${LOJAS[id].nome}"?`))return;
+  const {error}=await sb.from('lojas').delete().eq('id',id); // cascade remove produtos e histórico
+  if(error){alert('Erro ao remover loja: '+error.message);return;}
+  delete LOJAS[id];delete HISTORICO[id];populateSelects();renderStoreStatus();renderLojasCadastradas();
+}
 function setMsg(el,txt,ok){el.textContent=txt;el.className='msg'+(ok===true?' ok':ok===false?' err':'');}
 
 // ── GESTOR ──────────────────────────────────────────────────────
@@ -603,7 +674,7 @@ function printLista() {
 }
 
 // ── SUBMIT ──────────────────────────────────────────────────────
-function submitContagem() {
+async function submitContagem() {
   const loja=currentUser.loja;
   const now=new Date();
   const resultados=currentProducts.map((p,idx)=>{
@@ -612,7 +683,9 @@ function submitContagem() {
     return {...p,fisico:f,sistema:s,diverg:(f!=null&&s!=null)?f-s:null};
   });
 
-  // Salvar no histórico
+  const submitBtn=document.getElementById('submit-btn');
+  if(submitBtn){submitBtn.disabled=true;submitBtn.textContent='Salvando...';}
+
   if(!HISTORICO[loja]) HISTORICO[loja]=[];
   const rodada=HISTORICO[loja].length+1;
   const entrada={
@@ -632,12 +705,35 @@ function submitContagem() {
     },
     produtos: resultados
   };
-  HISTORICO[loja].push(entrada);
 
-  // Atualizar estado da loja
+  // Grava cabeçalho da contagem
+  const {error:e1}=await sb.from('historico_contagens').insert({
+    id: entrada.id, loja_id: loja, rodada: entrada.rodada, tipo: entrada.tipo,
+    data_str: entrada.data, hora_str: entrada.hora, data_iso: entrada.dataISO,
+    gestor: entrada.gestor, total_produtos: entrada.totalProdutos,
+    resumo_conferidos: entrada.resumo.conferidos, resumo_faltando: entrada.resumo.faltando,
+    resumo_sobrando: entrada.resumo.sobrando, resumo_saldo: entrada.resumo.saldo
+  });
+  if(e1){alert('Erro ao salvar contagem: '+e1.message);if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Enviar Contagem';}return;}
+
+  // Grava produtos da contagem em lotes
+  const prodRows=resultados.map(r=>({
+    contagem_id: entrada.id, ref:r.ref, grupo:r.grupo, marca:r.marca, descricao:r.descricao,
+    cor:r.cor, tamanho:r.tamanho, fisico:r.fisico, sistema:r.sistema, diverg:r.diverg
+  }));
+  for(let i=0;i<prodRows.length;i+=500){
+    const batch=prodRows.slice(i,i+500);
+    const {error:e2}=await sb.from('historico_produtos').insert(batch);
+    if(e2){alert('Erro ao salvar produtos da contagem: '+e2.message);if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Enviar Contagem';}return;}
+  }
+
+  // Atualiza estado da loja
+  const {error:e3}=await sb.from('lojas').update({completed:true,active:false}).eq('id',loja);
+  if(e3){alert('Erro ao atualizar estado da loja: '+e3.message);}
+
+  HISTORICO[loja].push(entrada);
   LOJAS[loja].state.completed=true; LOJAS[loja].state.active=false; LOJAS[loja].state.resultados=resultados;
   resultadoAll=resultados;
-  saveState();
   renderResultado(loja,resultados,rodada);
 }
 
@@ -708,7 +804,7 @@ function toggleRecontagem(key,cb) {
   document.getElementById('btn-iniciar-recontagem').disabled=recontagemSelecionados.size===0;
 }
 
-function iniciarRecontagem() {
+async function iniciarRecontagem() {
   if(recontagemSelecionados.size===0){alert('Selecione pelo menos um produto para recontar.');return;}
   const loja=currentUser.loja;
   const produtos=resultadoAll.filter(r=>{
@@ -718,7 +814,8 @@ function iniciarRecontagem() {
   contagem_anterior=resultadoAll;
   recontagemSelecionados=new Set();
   LOJAS[loja].state.active=true; LOJAS[loja].state.completed=false;
-  saveState();
+  const {error}=await sb.from('lojas').update({active:true,completed:false}).eq('id',loja);
+  if(error){alert('Erro ao iniciar recontagem: '+error.message);return;}
   showGestorScreen(loja,produtos,true);
 }
 
@@ -865,8 +962,17 @@ function renderAnalise(analise) {
 function voltarResultado(){showScreen('screen-resultado');}
 
 // ── INIT ────────────────────────────────────────────────────────
-populateSelects();
-showScreen('screen-login');
+async function initApp() {
+  const loginBox=document.querySelector('#screen-login .login-box');
+  const originalHTML=loginBox?loginBox.innerHTML:'';
+  if(loginBox) loginBox.innerHTML='<div style="text-align:center;padding:40px 0;color:var(--grey-400);font-size:13px">Carregando dados...</div>';
+  showScreen('screen-login');
+  await loadAllFromSupabase();
+  if(loginBox) loginBox.innerHTML=originalHTML;
+  populateSelects();
+  document.getElementById('login-senha')?.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+}
+initApp();
 
 </script>
 </body>
