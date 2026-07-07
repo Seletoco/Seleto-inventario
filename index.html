@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SELETO — Conferência de Inventário</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+  :root{--black:#0A0A0A;--white:#FAFAFA;--grey-100:#F0F0F0;--grey-200:#E0E0E0;--grey-400:#9A9A9A;--grey-600:#5A5A5A;--red:#D92B2B;--red-light:#FFF0F0;--green:#1A7A3A;--green-light:#F0FAF3;--yellow:#C47800;--yellow-light:#FFFBF0;--radius:6px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--grey-100);color:var(--black);min-height:100vh;font-size:14px;}
+  #screen-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--black);}
+  .login-box{background:var(--white);width:360px;padding:48px 40px 40px;border-radius:12px;}
+  .login-logo{font-size:22px;font-weight:700;letter-spacing:0.12em;margin-bottom:6px;}
+  .login-sub{font-size:12px;color:var(--grey-400);letter-spacing:0.04em;margin-bottom:36px;text-transform:uppercase;}
+  .form-label{display:block;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--grey-600);margin-bottom:6px;}
+  .form-input{width:100%;border:1.5px solid var(--grey-200);border-radius:var(--radius);padding:11px 14px;font-family:'Inter',sans-serif;font-size:14px;color:var(--black);background:var(--white);outline:none;transition:border-color 0.15s;margin-bottom:16px;}
+  .form-input:focus{border-color:var(--black);}
+  .btn-primary{width:100%;background:var(--black);color:var(--white);border:none;border-radius:var(--radius);padding:13px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.15s;margin-top:4px;}
+  .btn-primary:hover{opacity:0.85;}
+  .login-error{color:var(--red);font-size:12px;margin-top:10px;display:none;}
+  #screen-admin{min-height:100vh;background:var(--black);overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:40px 20px;}
+  .admin-box{background:var(--white);width:540px;padding:48px 40px 40px;border-radius:12px;margin:auto;}
+  .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;}
+  .admin-logo{font-size:20px;font-weight:700;letter-spacing:0.12em;}
+  .admin-tag{font-size:11px;font-weight:600;background:var(--black);color:var(--white);padding:4px 10px;border-radius:20px;letter-spacing:0.06em;text-transform:uppercase;}
+  .section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--grey-400);margin-bottom:12px;}
+  .store-status-grid{display:grid;gap:8px;margin-bottom:12px;}
+  .store-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1.5px solid var(--grey-200);border-radius:var(--radius);}
+  .store-row-left{flex:1;}
+  .store-name{font-weight:500;font-size:13px;}
+  .store-info{font-size:12px;color:var(--grey-400);margin-top:2px;}
+  .store-dot{width:8px;height:8px;border-radius:50%;background:var(--grey-200);}
+  .store-dot.yellow{background:var(--yellow);}
+  .store-dot.green{background:var(--green);}
+  .store-actions{display:flex;gap:6px;align-items:center;margin-left:12px;}
+  .btn-sm{border:1.5px solid var(--grey-200);background:var(--white);border-radius:var(--radius);padding:5px 10px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.15s;}
+  .btn-sm:hover{border-color:var(--black);}
+  .btn-sm.danger{color:var(--red);}
+  .btn-sm.danger:hover{border-color:var(--red);background:var(--red-light);}
+  .divider{border:none;border-top:1.5px solid var(--grey-200);margin:24px 0;}
+  .admin-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1.5px solid var(--grey-200);}
+  .admin-tab{padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;color:var(--grey-400);border-bottom:2px solid transparent;margin-bottom:-1.5px;transition:all 0.15s;}
+  .admin-tab.active{color:var(--black);border-bottom-color:var(--black);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+  .upload-area{border:2px dashed var(--grey-200);border-radius:var(--radius);padding:20px;text-align:center;cursor:pointer;transition:all 0.15s;margin-bottom:10px;}
+  .upload-area:hover{border-color:var(--black);background:var(--grey-100);}
+  .upload-icon{font-size:24px;margin-bottom:6px;}
+  .upload-text{font-size:13px;color:var(--grey-600);}
+  .upload-text strong{color:var(--black);}
+  .file-name{margin-top:6px;font-size:12px;color:var(--grey-600);}
+  .logout-link{display:block;text-align:center;margin-top:20px;font-size:12px;color:var(--grey-400);cursor:pointer;text-decoration:underline;}
+  .msg{margin-top:10px;font-size:12px;text-align:center;}
+  .msg.ok{color:var(--green);}
+  .msg.err{color:var(--red);}
+  #screen-gestor,#screen-resultado,#screen-analise,#screen-historico{display:none;}
+  .gestor-header{background:var(--black);color:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .gestor-left{display:flex;align-items:center;gap:10px;}
+  .g-logo{font-size:17px;font-weight:700;letter-spacing:0.12em;}
+  .g-badge{font-size:11px;font-weight:600;background:rgba(255,255,255,0.12);padding:4px 10px;border-radius:20px;}
+  .g-rodada{font-size:11px;color:rgba(255,255,255,0.5);}
+  .progress-wrap{flex:1;max-width:180px;margin:0 16px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;overflow:hidden;}
+  .progress-bar{height:100%;background:#fff;border-radius:2px;transition:width 0.3s;width:0%;}
+  .progress-text{font-size:12px;color:rgba(255,255,255,0.6);white-space:nowrap;}
+  .g-header-actions{display:flex;align-items:center;gap:10px;}
+  .btn-print-list{background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:var(--radius);padding:7px 12px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:opacity 0.15s;}
+  .btn-print-list:hover{opacity:0.8;}
+  .g-exit{font-size:12px;color:rgba(255,255,255,0.5);cursor:pointer;}
+  .col-header{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--grey-400);padding:8px 12px;display:grid;grid-template-columns:72px 1fr 64px 80px 80px;gap:10px;background:var(--grey-100);position:sticky;top:53px;z-index:50;margin-bottom:4px;}
+  .col-center{text-align:center;}
+  .gestor-body{padding:24px;max-width:900px;margin:0 auto;padding-bottom:80px;}
+  .group-block{margin-bottom:32px;}
+  .group-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--grey-400);padding:0 0 10px;border-bottom:1.5px solid var(--grey-200);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .group-marca{font-size:10px;font-weight:600;background:var(--grey-200);color:var(--grey-600);padding:2px 8px;border-radius:20px;}
+  .product-row{display:grid;grid-template-columns:72px 1fr 64px 80px 80px;gap:10px;align-items:center;padding:10px 12px;background:var(--white);border-radius:var(--radius);margin-bottom:4px;border:1.5px solid transparent;transition:border-color 0.15s,background 0.15s;}
+
+  .prod-ref{font-family:'DM Mono',monospace;font-size:12px;color:var(--grey-400);}
+  .prod-desc{font-size:13px;font-weight:500;line-height:1.3;}
+  .prod-cor{font-size:11px;color:var(--grey-600);margin-top:2px;}
+  .prod-tam{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;text-align:center;}
+  .prod-input{border:1.5px solid var(--grey-200);border-radius:var(--radius);padding:8px 6px;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;width:100%;text-align:center;outline:none;color:var(--black);background:var(--white);transition:border-color 0.15s;}
+  .prod-input:focus{border-color:var(--black);}
+  .prod-input::-webkit-inner-spin-button,.prod-input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+  .prod-input[type=number]{-moz-appearance:textfield;}
+  .submit-bar{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1.5px solid var(--grey-200);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;z-index:200;}
+  .submit-info{font-size:13px;color:var(--grey-600);}
+  .submit-btn{background:var(--black);color:var(--white);border:none;border-radius:var(--radius);padding:13px 28px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.15s;white-space:nowrap;}
+  .submit-btn:disabled{opacity:0.4;cursor:not-allowed;}
+  .submit-btn:not(:disabled):hover{opacity:0.85;}
+  .resultado-header{background:var(--black);color:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .resultado-body{padding:24px;max-width:1060px;margin:0 auto;padding-bottom:60px;}
+  .resultado-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+  .summary-card{background:var(--white);border-radius:var(--radius);padding:18px 20px;border:1.5px solid var(--grey-200);}
+  .summary-card.red{background:var(--red-light);border-color:#F5CCCC;}
+  .summary-card.green{background:var(--green-light);border-color:#B8E8C8;}
+  .summary-card.yellow{background:var(--yellow-light);border-color:#FFE5A0;}
+  .summary-value{font-size:28px;font-weight:700;font-family:'DM Mono',monospace;margin-bottom:4px;}
+  .summary-value.red{color:var(--red);}
+  .summary-value.green{color:var(--green);}
+  .summary-value.yellow{color:var(--yellow);}
+  .summary-label{font-size:11px;color:var(--grey-600);font-weight:500;text-transform:uppercase;letter-spacing:0.05em;}
+  .recontagem-bar{background:var(--white);border:1.5px solid var(--grey-200);border-radius:var(--radius);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;}
+  .rc-info{font-size:13px;color:var(--grey-600);}
+  .rc-info strong{color:var(--black);}
+  .btn-recontagem{background:var(--yellow);color:var(--black);border:none;border-radius:var(--radius);padding:9px 18px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .btn-recontagem:disabled{opacity:0.4;cursor:not-allowed;}
+  .filter-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+  .filter-btn{border:1.5px solid var(--grey-200);background:var(--white);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif;}
+  .filter-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
+  .resultado-table-wrap{overflow-x:auto;}
+  .resultado-table{width:100%;border-collapse:collapse;background:var(--white);border-radius:var(--radius);overflow:hidden;font-size:13px;}
+  .resultado-table th{background:var(--black);color:var(--white);padding:10px 14px;text-align:left;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;}
+  .resultado-table th.center,.resultado-table td.center{text-align:center;}
+  .resultado-table td{padding:10px 14px;border-bottom:1px solid var(--grey-100);vertical-align:middle;}
+  .resultado-table tr:last-child td{border-bottom:none;}
+  .resultado-table tr:hover td{background:var(--grey-100);}
+  .row-selected td{background:#FFF8E8!important;}
+  .rc-check{cursor:pointer;width:16px;height:16px;accent-color:var(--yellow);}
+  .badge-diverg{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace;}
+  .badge-neg{background:var(--red-light);color:var(--red);}
+  .badge-pos{background:var(--green-light);color:var(--green);}
+  .badge-zero{background:var(--grey-100);color:var(--grey-400);}
+  .print-btn{background:var(--white);color:var(--black);border:1.5px solid var(--white);border-radius:var(--radius);padding:9px 18px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
+  .new-btn{background:transparent;color:rgba(255,255,255,0.7);border:1.5px solid rgba(255,255,255,0.3);border-radius:var(--radius);padding:9px 18px;font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;margin-left:4px;}
+  .analise-card{background:var(--white);border-radius:var(--radius);padding:20px;border:1.5px solid var(--grey-200);margin-bottom:12px;}
+  .analise-card.alert{border-color:#F5CCCC;background:var(--red-light);}
+  .analise-card.ok{border-color:#B8E8C8;background:var(--green-light);}
+  .analise-card.warn{border-color:#FFE5A0;background:var(--yellow-light);}
+  .analise-card.info{border-color:#C8E0FF;background:#F0F6FF;}
+  .analise-produto{font-size:13px;font-weight:600;margin-bottom:4px;}
+  .analise-meta{font-size:11px;color:var(--grey-600);margin-bottom:10px;display:flex;gap:12px;flex-wrap:wrap;}
+  .analise-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:20px;background:var(--black);color:var(--white);display:inline-block;}
+  .analise-tag.troca{background:#7B4FCC;}
+  .analise-tag.divergencia{background:var(--red);}
+  .analise-tag.ok{background:var(--green);}
+  .analise-tag.recontar{background:var(--yellow);color:var(--black);}
+  .analise-diagnostico{font-size:13px;color:var(--black);line-height:1.6;margin-bottom:10px;}
+  .analise-acao{font-size:13px;font-weight:600;padding:8px 12px;border-radius:var(--radius);display:inline-block;color:var(--white);}
+  .analise-acao.remove{background:var(--red);}
+  .analise-acao.add{background:var(--green);}
+  .analise-acao.recontar{background:var(--yellow);color:var(--black);}
+  .analise-acao.troca{background:#7B4FCC;}
+  .analise-acao.ok{background:var(--green);}
+  .analise-resumo{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+  .hist-card{background:var(--white);border:1.5px solid var(--grey-200);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
+  .hist-card-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background 0.15s;}
+  .hist-card-header:hover{background:var(--grey-100);}
+  .hist-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:2px 8px;border-radius:20px;background:var(--black);color:var(--white);}
+  .hist-tag.recon{background:#7B4FCC;}
+  .hist-expand-icon{font-size:16px;color:var(--grey-400);}
+  .hist-detail{padding:0 20px 16px;}
+  .mono{font-family:'DM Mono',monospace;}
+  .hidden{display:none!important;}
+  @media print{.gestor-header,.submit-bar,.filter-bar,.print-btn,.new-btn,.recontagem-bar{display:none;}.resultado-body{padding:0;}body{background:white;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="screen-login">
+  <div class="login-box">
+    <div class="login-logo">SELETO</div>
+    <div class="login-sub">Conferência de Inventário</div>
+    <label class="form-label">Loja</label>
+    <select id="login-loja" class="form-input" style="cursor:pointer"><option value="">Selecione a loja...</option></select>
+    <label class="form-label">Senha</label>
+    <input id="login-senha" class="form-input" type="password" placeholder="••••••" autocomplete="off">
+    <button class="btn-primary" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="screen-admin" class="hidden">
+  <div class="admin-box">
+    <div class="admin-header"><div class="admin-logo">SELETO</div><div class="admin-tag">Admin</div></div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('tab-lojas',this)">Lojas</button>
+      <button class="admin-tab" onclick="switchTab('tab-nova-loja',this)">+ Nova loja</button>
+    </div>
+    <div class="tab-panel active" id="tab-lojas">
+      <div class="section-title">Status</div>
+      <div class="store-status-grid" id="store-status-grid"></div>
+      <hr class="divider">
+      <div class="section-title">Carregar planilha PDV</div>
+      <select id="upload-loja" class="form-input" style="cursor:pointer;margin-bottom:10px"><option value="">Selecionar loja...</option></select>
+      <div class="upload-area" onclick="document.getElementById('file-input').click()">
+        <div class="upload-icon">📊</div>
+        <div class="upload-text"><strong>Clique para selecionar</strong> o arquivo do PDV (.xlsx, .xls, .csv)</div>
+        <div class="file-name" id="file-name"></div>
+      </div>
+      <input type="file" id="file-input" accept=".xlsx,.xls,.csv" style="display:none" onchange="onFileSelected(this)">
+      <button class="btn-primary" onclick="uploadAndActivate()">Carregar e ativar contagem</button>
+      <div class="msg" id="upload-msg"></div>
+    </div>
+    <div class="tab-panel" id="tab-nova-loja">
+      <div class="section-title">Cadastrar nova loja</div>
+      <label class="form-label">Nome da loja</label>
+      <input id="new-loja-nome" class="form-input" type="text" placeholder="Ex: Shopping Leblon">
+      <label class="form-label">ID (sem espaços, sem acentos)</label>
+      <input id="new-loja-id" class="form-input" type="text" placeholder="Ex: leblon">
+      <label class="form-label">Senha do gestor</label>
+      <input id="new-loja-senha" class="form-input" type="text" placeholder="Ex: leb2026">
+      <button class="btn-primary" onclick="addNewLoja()">Cadastrar loja</button>
+      <div class="msg" id="new-loja-msg"></div>
+      <hr class="divider">
+      <div class="section-title">Lojas cadastradas</div>
+      <div id="lojas-cadastradas-list"></div>
+    </div>
+    <span class="logout-link" onclick="logout()">Sair</span>
+  </div>
+</div>
+
+<!-- GESTOR -->
+<div id="screen-gestor">
+  <div class="gestor-header">
+    <div class="gestor-left">
+      <div class="g-logo">SELETO</div>
+      <div class="g-badge" id="gestor-store-label">—</div>
+      <div class="g-rodada" id="gestor-rodada"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+      <div class="progress-text" id="progress-text">0 / 0</div>
+    </div>
+    <div class="g-header-actions">
+      <button class="btn-print-list" onclick="printLista()">🖨 Imprimir</button>
+      <span class="g-exit" onclick="logout()">Sair</span>
+    </div>
+  </div>
+  <div class="gestor-body" id="gestor-body"></div>
+  <div class="submit-bar">
+    <div class="submit-info"><strong id="filled-count">0</strong> de <strong id="total-count">0</strong> preenchidos</div>
+    <button class="submit-btn" id="submit-btn" onclick="submitContagem()" disabled>Finalizar contagem →</button>
+  </div>
+</div>
+
+<!-- RESULTADO -->
+<div id="screen-resultado">
+  <div class="resultado-header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-size:17px;font-weight:700;letter-spacing:0.12em">SELETO</div>
+      <div id="resultado-store-badge" style="font-size:11px;font-weight:600;background:rgba(255,255,255,0.12);padding:4px 10px;border-radius:20px"></div>
+      <div id="resultado-rodada" style="font-size:11px;color:rgba(255,255,255,0.5)"></div>
+      <div id="resultado-date" style="font-size:11px;color:rgba(255,255,255,0.4)"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button class="print-btn" onclick="window.print()">Imprimir</button>
+      <button style="background:#7B4FCC;color:#fff;border:none;border-radius:var(--radius);padding:9px 16px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;cursor:pointer" onclick="iniciarAnaliseIA()">🤖 Analisar IA</button>
+      <button class="new-btn" onclick="novaContagem()">Nova contagem</button>
+    </div>
+  </div>
+  <div class="resultado-body">
+    <div class="resultado-summary" id="resultado-summary"></div>
+    <div class="recontagem-bar">
+      <div class="rc-info">Selecione produtos na tabela para <strong>recontar</strong> · <span id="recontagem-selecionados">0 selecionados</span></div>
+      <button class="btn-recontagem" id="btn-iniciar-recontagem" onclick="iniciarRecontagem()" disabled>↺ Iniciar Recontagem</button>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterResultado('all',this)">Todos</button>
+      <button class="filter-btn" onclick="filterResultado('neg',this)">Faltando (−)</button>
+      <button class="filter-btn" onclick="filterResultado('pos',this)">Sobrando (+)</button>
+      <button class="filter-btn" onclick="filterResultado('zero',this)">Sem divergência</button>
+    </div>
+    <div class="resultado-table-wrap">
+      <table class="resultado-table">
+        <thead><tr>
+          <th style="width:36px"></th>
+          <th>Ref.</th><th>Grupo</th><th>Marca</th><th>Produto</th><th>Cor</th>
+          <th class="center">Tam.</th><th class="center">Físico</th><th class="center">Sistema</th><th class="center">Divergência</th>
+        </tr></thead>
+        <tbody id="resultado-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ANÁLISE IA -->
+<div id="screen-analise">
+  <div class="resultado-header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-size:17px;font-weight:700;letter-spacing:0.12em">SELETO</div>
+      <div id="analise-store-badge" style="font-size:11px;font-weight:600;background:rgba(255,255,255,0.12);padding:4px 10px;border-radius:20px"></div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">Análise IA</div>
+    </div>
+    <div>
+      <button class="print-btn" onclick="window.print()">Imprimir</button>
+      <button class="new-btn" onclick="voltarResultado()">← Voltar</button>
+    </div>
+  </div>
+  <div class="resultado-body">
+    <div id="analise-loading" style="display:none;text-align:center;padding:60px 0">
+      <div style="font-size:32px;margin-bottom:16px">🤖</div>
+      <div style="font-size:15px;font-weight:600;margin-bottom:8px">Analisando divergências...</div>
+      <div style="font-size:13px;color:var(--grey-400)">Cruzando contagem do inventário com recontagem do gestor</div>
+      <div style="margin-top:24px;height:4px;background:var(--grey-200);border-radius:2px;max-width:300px;margin:24px auto 0;overflow:hidden">
+        <div id="analise-progress-bar" style="height:100%;width:0%;background:var(--black);border-radius:2px;transition:width 0.4s"></div>
+      </div>
+    </div>
+    <div id="analise-content"></div>
+  </div>
+</div>
+
+<!-- HISTÓRICO -->
+<div id="screen-historico">
+  <div class="resultado-header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="font-size:17px;font-weight:700;letter-spacing:0.12em">SELETO</div>
+      <div id="historico-store-badge" style="font-size:11px;font-weight:600;background:rgba(255,255,255,0.12);padding:4px 10px;border-radius:20px"></div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5)">Histórico</div>
+    </div>
+    <button class="new-btn" onclick="showAdminScreen()">← Voltar</button>
+  </div>
+  <div class="resultado-body" id="historico-body"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const PRODUTOS_NIG = [{"ref":"007541","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TÊNIS VANS TENIS KNU SKOOL","cor":"BEGE CLARO","tamanho":"35"},{"ref":"007498","grupo":"TÊNIS","marca":"VANS","descricao":"VR26 TÊNIS VANS TENIS KNU SKOOL","cor":"AZUL / BRANCO","tamanho":"37"},{"ref":"007497","grupo":"TÊNIS","marca":"VANS","descricao":"INV26 TÊNIS VANS HYLANE","cor":"OFF WHITE / AZUL","tamanho":"36"},{"ref":"007340","grupo":"TÊNIS","marca":"VANS","descricao":"INV26 TÊNIS VANS ULTRARANGE","cor":"PRETO","tamanho":"42"},{"ref":"006876","grupo":"TÊNIS","marca":"VANS","descricao":"VR26 TÊNIS VANS TENIS KNU SKOOL","cor":"BRANCO /  AZUL","tamanho":"36"},{"ref":"006876","grupo":"TÊNIS","marca":"VANS","descricao":"VR26 TÊNIS VANS TENIS KNU SKOOL","cor":"BRANCO /  AZUL","tamanho":"35"},{"ref":"006562","grupo":"TÊNIS","marca":"VANS","descricao":"VERAO26 TÊNIS VANS TENIS HYLANE","cor":"BEGE","tamanho":"35"},{"ref":"005551","grupo":"TÊNIS","marca":"VANS","descricao":"VR25 TENIS VANS SK8 TAPER","cor":"OFF / ROSA","tamanho":"35"},{"ref":"005115","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"PRETO","tamanho":"38"},{"ref":"005115","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"PRETO","tamanho":"36"},{"ref":"005115","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"PRETO","tamanho":"35"},{"ref":"005115","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"PRETO","tamanho":"43"},{"ref":"005115","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"PRETO","tamanho":"34"},{"ref":"005083","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"AZUL","tamanho":"37"},{"ref":"005083","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"AZUL","tamanho":"35"},{"ref":"005083","grupo":"TÊNIS","marca":"VANS","descricao":"PERM TENIS VANS KNU SKOOL","cor":"AZUL","tamanho":"34"},{"ref":"004818","grupo":"TÊNIS","marca":"VANS","descricao":"INV24 TENIS VANS ERA","cor":"PRETO / ONÇA","tamanho":"36"},{"ref":"004818","grupo":"TÊNIS","marca":"VANS","descricao":"INV24 TENIS VANS ERA","cor":"PRETO / ONÇA","tamanho":"35"},{"ref":"004817","grupo":"TÊNIS","marca":"VANS","descricao":"INV24 TENIS VANS AUTHENTIC","cor":"SALMÃO","tamanho":"35"},{"ref":"003802","grupo":"TÊNIS","marca":"VANS","descricao":"TENIS VANS OLD SKOOL","cor":"PRETO / BRANCO","tamanho":"36"},{"ref":"007535","grupo":"TÊNIS","marca":"ADIDAS","descricao":"INV26 TÊNIS ADIDAS TENIS SAMBA OG","cor":"PRETO","tamanho":"42"},{"ref":"007535","grupo":"TÊNIS","marca":"ADIDAS","descricao":"INV26 TÊNIS ADIDAS TENIS SAMBA OG","cor":"PRETO","tamanho":"41"},{"ref":"006423","grupo":"TÊNIS","marca":"ADIDAS","descricao":"VERAO26 TÊNIS ADIDAS TENIS SL72 OG W","cor":"BEGE","tamanho":"37"},{"ref":"006331","grupo":"TÊNIS","marca":"ADIDAS","descricao":"INV25 TÊNIS ADIDAS TENIS ADI2000","cor":"ALL BLACK","tamanho":"39"},{"ref":"005512","grupo":"TÊNIS","marca":"ADIDAS","descricao":"VR25 TENIS ADIDAS CAMPUS 00S","cor":"PRETO","tamanho":"37"},{"ref":"005512","grupo":"TÊNIS","marca":"ADIDAS","descricao":"VR25 TENIS ADIDAS CAMPUS 00S","cor":"PRETO","tamanho":"34"},{"ref":"005048","grupo":"TÊNIS","marca":"ADIDAS","descricao":"INV24 TENIS ADIDAS CAMPUS 00S","cor":"PRETO","tamanho":"42"},{"ref":"003759","grupo":"TÊNIS","marca":"ADIDAS","descricao":"TENIS ADIDAS SUPERSTAR","cor":"BRANCO","tamanho":"42"},{"ref":"007406","grupo":"TÊNIS","marca":"CONVERSE","descricao":"INV26 TÊNIS CONVERSE WAVE MOTION","cor":"CINZA / BRANCO","tamanho":"39"},{"ref":"007406","grupo":"TÊNIS","marca":"CONVERSE","descricao":"INV26 TÊNIS CONVERSE WAVE MOTION","cor":"CINZA / BRANCO","tamanho":"37"},{"ref":"007405","grupo":"TÊNIS","marca":"CONVERSE","descricao":"INV26 TÊNIS CONVERSE WAVE MOTION","cor":"PRETO / OFF WHITE","tamanho":"39"},{"ref":"007405","grupo":"TÊNIS","marca":"CONVERSE","descricao":"INV26 TÊNIS CONVERSE WAVE MOTION","cor":"PRETO / OFF WHITE","tamanho":"37"},{"ref":"004943","grupo":"TÊNIS","marca":"CONVERSE","descricao":"PERM TENIS CONVERSE ALL STAR CHUCK TAYLOR","cor":"BRANCO","tamanho":"36"},{"ref":"004943","grupo":"TÊNIS","marca":"CONVERSE","descricao":"PERM TENIS CONVERSE ALL STAR CHUCK TAYLOR","cor":"BRANCO","tamanho":"34"},{"ref":"005240","grupo":"TÊNIS","marca":"REDLEY","descricao":"PERM TENIS REDLEY ORIGINALS","cor":"ALL BLACK","tamanho":"40"},{"ref":"005240","grupo":"TÊNIS","marca":"REDLEY","descricao":"PERM TENIS REDLEY ORIGINALS","cor":"ALL BLACK","tamanho":"39"},{"ref":"005240","grupo":"TÊNIS","marca":"REDLEY","descricao":"PERM TENIS REDLEY ORIGINALS","cor":"ALL BLACK","tamanho":"37"},{"ref":"003171","grupo":"TÊNIS","marca":"REDLEY","descricao":"TENIS REDLEY ORIGINALS","cor":"PRETO","tamanho":"40"},{"ref":"003171","grupo":"TÊNIS","marca":"REDLEY","descricao":"TENIS REDLEY ORIGINALS","cor":"PRETO","tamanho":"35"},{"ref":"003171","grupo":"TÊNIS","marca":"REDLEY","descricao":"TENIS REDLEY ORIGINALS","cor":"PRETO","tamanho":"34"},{"ref":"007484","grupo":"TÊNIS","marca":"NEW BALANCE","descricao":"INV26 TÊNIS NEW BALANCE TENIS 1000","cor":"PRETO / BRANCO","tamanho":"40"},{"ref":"006843","grupo":"TÊNIS","marca":"NEW BALANCE","descricao":"VR26 TÊNIS NEW BALANCE TENIS 1000","cor":"PETROLEO / PRATA","tamanho":"40"},{"ref":"007705","grupo":"CAMISETA","marca":"ADIDAS","descricao":"INV26 CAMISETA ADIDAS CAMISA TREFOIL ESS","cor":"AZUL ESCURO","tamanho":"M"},{"ref":"007628","grupo":"CAMISETA","marca":"ADIDAS","descricao":"INV26 CAMISETA ADIDAS 3S RINGER T","cor":"MARINHO","tamanho":"G"},{"ref":"007628","grupo":"CAMISETA","marca":"ADIDAS","descricao":"INV26 CAMISETA ADIDAS 3S RINGER T","cor":"MARINHO","tamanho":"M"},{"ref":"007277","grupo":"CAMISETA","marca":"ADIDAS","descricao":"INV26 CAMISETA ADIDAS CAMISA 3 STRIPES","cor":"VERMELHO","tamanho":"G"},{"ref":"007237","grupo":"CAMISETA","marca":"ADIDAS","descricao":"VR26 CAMISETA ADIDAS CAMISA TREFOIL ESS","cor":"PRETO","tamanho":"M"},{"ref":"006168","grupo":"CAMISETA","marca":"ADIDAS","descricao":"PERMCAMISETA ADIDAS CAMISA ESSENTIAL","cor":"BRANCO","tamanho":"G"},{"ref":"005692","grupo":"CAMISETA","marca":"ADIDAS","descricao":"VR25 CAMISA ADIDAS TREFOIL ESS","cor":"PRETO","tamanho":"G"},{"ref":"005692","grupo":"CAMISETA","marca":"ADIDAS","descricao":"VR25 CAMISA ADIDAS TREFOIL ESS","cor":"PRETO","tamanho":"M"},{"ref":"005692","grupo":"CAMISETA","marca":"ADIDAS","descricao":"VR25 CAMISA ADIDAS TREFOIL ESS","cor":"PRETO","tamanho":"P"},{"ref":"007750","grupo":"CAMISETA","marca":"THUG NINE","descricao":"COPA 26 CAMISETA THUG NINE FUTEBOL BRASIL","cor":"AMARELO / VERDE","tamanho":"3G"},{"ref":"007294","grupo":"CAMISETA","marca":"THUG NINE","descricao":"INV26 CAMISETA THUG NINE THUG GIF","cor":"UNICA","tamanho":"3G"},{"ref":"007172","grupo":"CAMISETA","marca":"THUG NINE","descricao":"VR26 CAMISETA THUG NINE BOLD PREMIUM","cor":"CINZA","tamanho":"3G"},{"ref":"007172","grupo":"CAMISETA","marca":"THUG NINE","descricao":"VR26 CAMISETA THUG NINE BOLD PREMIUM","cor":"CINZA","tamanho":"GG"},{"ref":"006352","grupo":"CAMISETA","marca":"THUG NINE","descricao":"CAMISETA THUG NINE SHARING","cor":"BEGE","tamanho":"3G"},{"ref":"007788","grupo":"CAMISETA","marca":"CHAMPION","descricao":"INV26 CAMISETA CHAMPION POLO RAGLAN LISTRADA","cor":"AZUL / CINZA","tamanho":"G"},{"ref":"007732","grupo":"CAMISETA","marca":"CHAMPION","descricao":"INV26 CAMISETA CHAMPION POLO RAGLAN JACKARD","cor":"PRETO / VINHO","tamanho":"G"},{"ref":"007456","grupo":"CAMISETA","marca":"CHAMPION","descricao":"INV26 CAMISETA CHAMPION BOXY NANO TEXT","cor":"PRETO","tamanho":"G"},{"ref":"004752","grupo":"CAMISETA","marca":"CHAMPION","descricao":"PERM CAMISA CHAMPION TEE SCRIPT BORDADO","cor":"PRETO","tamanho":"M"},{"ref":"007884","grupo":"CAMISETA","marca":"NIKE","descricao":"COPA 26 CAMISETA NIKE CAMISA JOGO 1 BRASIL","cor":"AMARELO","tamanho":"3G"},{"ref":"007775","grupo":"CAMISETA","marca":"NIKE","descricao":"INV26 CAMISETA NIKE NSW AUTHRZD PERS","cor":"PRETO","tamanho":"G"},{"ref":"007223","grupo":"CAMISETA","marca":"NIKE","descricao":"VR26 CAMISETA NIKE CAMISA NSW TEE M90","cor":"PRETO","tamanho":"P"},{"ref":"002022","grupo":"CAMISETA","marca":"NIKE","descricao":"CAMISA POLO NIKE ALGODÃO","cor":"PRETO","tamanho":"G"},{"ref":"002022","grupo":"CAMISETA","marca":"NIKE","descricao":"CAMISA POLO NIKE ALGODÃO","cor":"PRETO","tamanho":"M"},{"ref":"007786","grupo":"CAMISETA","marca":"HIGH","descricao":"INV26 CAMISETA HIGH INTERLOCK","cor":"PRETO","tamanho":"M"},{"ref":"007785","grupo":"CAMISETA","marca":"HIGH","descricao":"INV26 CAMISETA HIGH ALICE FRONT","cor":"PRETO","tamanho":"M"},{"ref":"007917","grupo":"CAMISETA","marca":"APPROVE","descricao":"INV26 CAMISETA APPROVE HUGE MADONA","cor":"MARROM","tamanho":"G"},{"ref":"006234","grupo":"CAMISETA","marca":"APPROVE","descricao":"CAMISETA APPROVE CAMISA HUGE HOLY GRAIL","cor":"PRETO","tamanho":"G"},{"ref":"007906","grupo":"CAMISETA","marca":"DUBS","descricao":"INV26 CAMISETA DUBS STUDIO","cor":"OFF WHITE","tamanho":"G"},{"ref":"007012","grupo":"CAMISETA","marca":"FARM","descricao":"VR26 CAMISETA FARM IPANEMA","cor":"OFF WHITE","tamanho":"P"},{"ref":"006618","grupo":"CAMISETA","marca":"BAW","descricao":"VERAO26 CAMISETA BAW CAMISA REGULAR GOTH","cor":"PRETO","tamanho":"M"},{"ref":"006402","grupo":"CAMISETA","marca":"FILA","descricao":"INV25 CAMISETA FILA CAMISA COMFORT","cor":"PRETO","tamanho":"M"},{"ref":"006076","grupo":"CAMISETA","marca":"MONS","descricao":"INV25 CAMISETA MONS BASICA","cor":"PRETO","tamanho":"G"},{"ref":"007701","grupo":"CHINELO","marca":"KENNER","descricao":"INV26 CHINELO KENNER RAKKA NYLON","cor":"AZUL","tamanho":"38"},{"ref":"007701","grupo":"CHINELO","marca":"KENNER","descricao":"INV26 CHINELO KENNER RAKKA NYLON","cor":"AZUL","tamanho":"37"},{"ref":"007201","grupo":"CHINELO","marca":"KENNER","descricao":"VR26 CHINELO KENNER COLLAB L7 ORAK","cor":"PRETO","tamanho":"42"},{"ref":"007201","grupo":"CHINELO","marca":"KENNER","descricao":"VR26 CHINELO KENNER COLLAB L7 ORAK","cor":"PRETO","tamanho":"41"},{"ref":"007021","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER RAKKA ULTRA FULL FORCE","cor":"PRETO","tamanho":"43"},{"ref":"007021","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER RAKKA ULTRA FULL FORCE","cor":"PRETO","tamanho":"42"},{"ref":"007021","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER RAKKA ULTRA FULL FORCE","cor":"PRETO","tamanho":"41"},{"ref":"007021","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER RAKKA ULTRA FULL FORCE","cor":"PRETO","tamanho":"39"},{"ref":"004788","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER RAKKA ULTRA FULL FORCE","cor":"BRANCO / PRETO / KHAKI","tamanho":"40"},{"ref":"004787","grupo":"CHINELO","marca":"KENNER","descricao":"PERM CHINELO KENNER KIVAH FULL FORCE","cor":"PRETO / METAL","tamanho":"38"},{"ref":"004052","grupo":"CHINELO","marca":"KENNER","descricao":"CHINELO KENNER RAKKA FREQUENCIA L7","cor":"PRETO / DOURADO","tamanho":"42"},{"ref":"003936","grupo":"CHINELO","marca":"KENNER","descricao":"CHINEO KENNER RAKKA L7 FORCE","cor":"ALL BLACK","tamanho":"44"},{"ref":"006189","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM SANDALIA SALTO RASTEIRO PLASTI","cor":"BEGE / ROXO","tamanho":"34"},{"ref":"006175","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM SANDALIA SALTO RASTEIRO PLASTICO","cor":"AZUL BB","tamanho":"34"},{"ref":"006083","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM CHINELO SALTO RASTEIRO","cor":"OFF WHITE / AZUL","tamanho":"34"},{"ref":"006066","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM SANDALIA SALTO RASTEIRO","cor":"PRETO","tamanho":"36"},{"ref":"005934","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM SANDALIA SALTO RASTEIRO PLASTI","cor":"OFF WHITE / AZUL","tamanho":"34"},{"ref":"005909","grupo":"CHINELO","marca":"FARM","descricao":"INV25 FARM SANDALIA SALTO RASTEIRO","cor":"AZUL BB","tamanho":"33"},{"ref":"005716","grupo":"CHINELO","marca":"FARM","descricao":"INV24 CHINELO FARM","cor":"PRETO / BRANCO","tamanho":"34"},{"ref":"005713","grupo":"CHINELO","marca":"FARM","descricao":"INV25 CHINELO FARM SALTO RASTEIRO","cor":"PRETO / BRANCO","tamanho":"34"},{"ref":"005270","grupo":"CHINELO","marca":"FARM","descricao":"VR25 CHINELO FARM PRAIANA EST RIO","cor":"PRETO","tamanho":"40"},{"ref":"007081","grupo":"CHINELO","marca":"THUG NINE","descricao":"CHINELO THUG NINE NUVEM","cor":"MARROM","tamanho":"43"},{"ref":"007081","grupo":"CHINELO","marca":"THUG NINE","descricao":"CHINELO THUG NINE NUVEM","cor":"MARROM","tamanho":"39"},{"ref":"007003","grupo":"CHINELO","marca":"THUG NINE","descricao":"VR26 CHINELO THUG NINE CLOUD PRO","cor":"CINZA","tamanho":"42"},{"ref":"007002","grupo":"CHINELO","marca":"THUG NINE","descricao":"VR26 CHINELO THUG NINE CLOUD PRO","cor":"BEGE / PALHA","tamanho":"40"},{"ref":"006127","grupo":"CHINELO","marca":"THUG NINE","descricao":"INV25 CHINELO THUG NINE CHINELO NUVEM 2","cor":"MARROM","tamanho":"44"},{"ref":"006127","grupo":"CHINELO","marca":"THUG NINE","descricao":"INV25 CHINELO THUG NINE CHINELO NUVEM 2","cor":"MARROM","tamanho":"40"},{"ref":"007248","grupo":"CHINELO","marca":"ADIDAS","descricao":"VR26 CHINELO ADIDAS CAMPUS 00S","cor":"KHAKI","tamanho":"36"},{"ref":"006334","grupo":"CHINELO","marca":"ADIDAS","descricao":"INV25 CHINELO ADIDAS CHINELO ADILETTE 22","cor":"CHUMBO","tamanho":"44"},{"ref":"003424","grupo":"CHINELO","marca":"ADIDAS","descricao":"CHINELO ADIDAS ADILETE","cor":"PRETO / BRANCO","tamanho":"44"},{"ref":"006874","grupo":"CHINELO","marca":"CHAMPION","descricao":"VR26 CHINELO CHAMPION SPHERIC II CLASSIC","cor":"CINZA","tamanho":"42"},{"ref":"006874","grupo":"CHINELO","marca":"CHAMPION","descricao":"VR26 CHINELO CHAMPION SPHERIC II CLASSIC","cor":"CINZA","tamanho":"41"},{"ref":"005662","grupo":"CHINELO","marca":"NIKE","descricao":"PERM CHINELO NIKE CALM SLIDE","cor":"VERDE MUSGO","tamanho":"40,5"},{"ref":"004813","grupo":"CHINELO","marca":"NIKE","descricao":"UN SLIDE NIKE AIR MAX CIRRO","cor":"BRANCO / AZUL","tamanho":"39"},{"ref":"000995","grupo":"CHINELO","marca":"NIKE","descricao":"CHINELO SLIDE NIKE VICTORI ONE","cor":"PRETO","tamanho":"43"},{"ref":"000995","grupo":"CHINELO","marca":"NIKE","descricao":"CHINELO SLIDE NIKE VICTORI ONE","cor":"PRETO","tamanho":"40,5"},{"ref":"007666","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"INV26 BOLSINHA ME LEVA FARM LENÇO MAGIA","cor":"UNICA","tamanho":"UN"},{"ref":"007665","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"INV26 BOLSINHA ME LEVA FARM FLOREJO","cor":"UNICA","tamanho":"UN"},{"ref":"007552","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"INV26 BOLSINHA ME LEVA FARM TUCANO","cor":"COLORIDO","tamanho":"UN"},{"ref":"007320","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"INV26 BOLSINHA ME LEVA FARM ESPORTE SUNSET","cor":"UNICA","tamanho":"UN"},{"ref":"007319","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"INV26 BOLSINHA ME LEVA FARM URBANO","cor":"UNICA","tamanho":"UN"},{"ref":"006467","grupo":"BOLSINHA ME LEVA","marca":"FARM","descricao":"VERAO26 BOLSINHA ME LEVA FARM FLOR DE BANANA PRETO","cor":"PRETO / COLORIDO","tamanho":"UN"},{"ref":"007296","grupo":"SHORT 1","marca":"CHAMPION","descricao":"INV26 SHORT 1 CHAMPION CHAMPION GIF","cor":"UNICA","tamanho":"P"},{"ref":"006965","grupo":"SHORT 1","marca":"RAFROW","descricao":"BST 7 SHORT 1 RAFROW SHORT LINHO","cor":"CINZA","tamanho":"GG"},{"ref":"005540","grupo":"SHORT 1","marca":"THUG NINE","descricao":"VR25 SHORT THUG NINE TRAIL","cor":"OFF WHITE","tamanho":"G"},{"ref":"004665","grupo":"SHORT 1","marca":"NIKE","descricao":"PERM SHORT NIKE CLUB FLOW","cor":"PRETO","tamanho":"G"},{"ref":"007594","grupo":"NECESSARIE CACULA","marca":"FARM","descricao":"INV26 NECESSARIE CACULA FARM ESPORTE TRILHA","cor":"UNICA","tamanho":"UN"},{"ref":"007138","grupo":"NECESSARIE CACULA","marca":"FARM","descricao":"NECESSAIRE FARM CACULA ESPORTE COPATUCAN","cor":"UNICA","tamanho":"UN"},{"ref":"007083","grupo":"NECESSARIE CACULA","marca":"FARM","descricao":"NECESSAIRE FARM CACULA ESTUDANTE MEMORIA","cor":"UNICA","tamanho":"UN"},{"ref":"007681","grupo":"GARRAFA ETC 850ML","marca":"FARM","descricao":"INV26 GARRAFA ETC 850ML FARM WELLNESS","cor":"UNICA","tamanho":"UN"},{"ref":"007675","grupo":"GARRAFA ETC 850ML","marca":"FARM","descricao":"INV26 GARRAFA ETC 850ML FARM FESTA DE ONÇA","cor":"UNICA","tamanho":"UN"},{"ref":"007582","grupo":"BOLSA CHUCHU","marca":"FARM","descricao":"INV26 BOLSA CHUCHU FARM LENÇO MAGIA","cor":"UNICA","tamanho":"UN"},{"ref":"007568","grupo":"BOLSA CHUCHU","marca":"FARM","descricao":"INV26 BOLSA CHUCHU FARM ESPORTE RELEVO CARIOCA","cor":"UNICA","tamanho":"UN"},{"ref":"007715","grupo":"BOLSA","marca":"ADIDAS","descricao":"INV26 BOLSA ADIDAS ADICOLOR","cor":"MARROM / ROSA","tamanho":"UN"},{"ref":"006259","grupo":"BOLSA","marca":"ADIDAS","descricao":"INV25 BOLSA ADIDAS BOLSA ADICOLOR BB XS","cor":"PRETO","tamanho":"UN"},{"ref":"006664","grupo":"KIT MOSQUETOES","marca":"FARM","descricao":"VERAO26 KIT MOSQUETOES FARM KIT MOSQUETOES","cor":"PRETO","tamanho":"UN"},{"ref":"006663","grupo":"KIT MOSQUETOES","marca":"FARM","descricao":"VERAO26 KIT MOSQUETOES FARM KIT MOSQUETOES","cor":"AMARELO","tamanho":"UN"},{"ref":"007271","grupo":"BONE","marca":"ADIDAS","descricao":"INV26 BONE ADIDAS LIGHT W SPW","cor":"PRETO","tamanho":"UN"},{"ref":"002152","grupo":"BONE","marca":"NEW ERA","descricao":"PERM BONE NEW ERA 920 ST PERMANENTE","cor":"PRETO","tamanho":"UN"},{"ref":"007685","grupo":"MAXI NECESSAIRE ORA BOLAS G","marca":"FARM","descricao":"INV26 MAXI NECESSAIRE ORA BOLAS G FARM FESTA DE ONÇA","cor":"UNICA","tamanho":"UN"},{"ref":"007614","grupo":"GARRAFA QUE SEDE 750ML","marca":"FARM","descricao":"INV26 GARRAFA QUE SEDE 750ML FARM GUACANASTE","cor":"UNICA","tamanho":"UN"},{"ref":"007360","grupo":"GARRAFA ETC 650ML","marca":"FARM","descricao":"INV26 GARRAFA ETC 650ML FARM URBANO SEMANA DE ARTE","cor":"UNICA","tamanho":"UN"},{"ref":"007358","grupo":"GARRAFA QUE SEDE 500ML","marca":"FARM","descricao":"INV26 GARRAFA QUE SEDE 500ML FARM UNIVERSITARIA","cor":"UNICA","tamanho":"UN"},{"ref":"007323","grupo":"MINI COOLER FAROFA","marca":"FARM","descricao":"INV26 MINI COOLER FAROFA FARM PRAIA BAHIA CHEIRO","cor":"UNICA","tamanho":"UN"},{"ref":"007308","grupo":"BOLSA DA GEMA","marca":"FARM","descricao":"INV26 BOLSA DA GEMA FARM PRAIA BAHIA CHEIRO","cor":"UNICA","tamanho":"UN"},{"ref":"007101","grupo":"NECESSAIRE ZIRIGUIDUM","marca":"FARM","descricao":"NECESSAIRE FARM ZIRIGUIDUM VIAJANTE SELO","cor":"UNICA","tamanho":"UN"},{"ref":"006784","grupo":"CAIXA DE FOSFORO","marca":"FARM","descricao":"VR26 CAIXA DE FOSFORO FARM EL NAMORADOS","cor":"VERMELHO","tamanho":"UN"},{"ref":"006778","grupo":"PORTA INCENSO ASTRAL","marca":"FARM","descricao":"VR26 PORTA INCENSO ASTRAL FARM CORAÇÃO","cor":"ROSE","tamanho":"UN"},{"ref":"006733","grupo":"GARRAFA GLUB GLUB 1L","marca":"FARM","descricao":"VR26 GARRAFA GLUB GLUB 1L FARM FLOR DE BANANA PRETO","cor":"PRETO / COLORIDO","tamanho":"UN"},{"ref":"006658","grupo":"MAXI NECESSARIE ORA BOLAS","marca":"FARM","descricao":"VERAO26 MAXI NECESSARIE ORA BOLAS FARM ARARA LISTRADO","cor":"BRANCO / AZUL","tamanho":"UN"},{"ref":"006607","grupo":"CADERNO UNIVERSITARIO","marca":"FARM","descricao":"VERAO26 CADERNO UNIVERSITARIO FARM BOSSA BANANA","cor":"PRETO / AMARELO","tamanho":"UN"},{"ref":"006537","grupo":"GARRAFA GLUB GLUB 750ML","marca":"FARM","descricao":"VERAO26 GARRAFA GLUB GLUB 750ML FARM BRASIL DE COR","cor":"COLORIDO","tamanho":"UN"},{"ref":"004653","grupo":"MEIA","marca":"UNICO","descricao":"BST 2 UNICO MEIA INVISIVEL 2","cor":"UNICA","tamanho":"UN"}];
+// ═══════════════════════════════════════════════════════════════
+// SELETO — Sistema de Conferência de Inventário
+// Arquitetura Supabase-ready: toda persistência via DB_ADAPTER
+// ═══════════════════════════════════════════════════════════════
+
+// ── DB ADAPTER (localStorage agora → Supabase depois) ──────────
+const DB = {
+  save(key, val) { try { localStorage.setItem('seleto_'+key, JSON.stringify(val)); } catch(e){} },
+  load(key, def) { try { const v=localStorage.getItem('seleto_'+key); return v?JSON.parse(v):def; } catch(e){ return def; } },
+  remove(key) { try { localStorage.removeItem('seleto_'+key); } catch(e){} }
+};
+
+// ── ESTADO GLOBAL ───────────────────────────────────────────────
+let LOJAS = DB.load('lojas', {
+  'americas':    { nome:'Américas',    senha:'ame2026',  produtos:[], state:{active:false,completed:false,resultados:null} },
+  'nova-iguacu': { nome:'Nova Iguaçu', senha:'nig2026',  produtos:PRODUTOS_NIG, state:{active:false,completed:false,resultados:null} },
+  'taquara':     { nome:'Taquara',     senha:'tq2026',   produtos:[], state:{active:false,completed:false,resultados:null} },
+  'aerotown':    { nome:'Aerotown',    senha:'aero2026', produtos:[], state:{active:false,completed:false,resultados:null} },
+});
+
+// Restaurar produtos NIG se veio vazio do localStorage
+if (LOJAS['nova-iguacu'] && LOJAS['nova-iguacu'].produtos.length === 0) {
+  LOJAS['nova-iguacu'].produtos = PRODUTOS_NIG;
+}
+
+// Histórico: { [lojaId]: [ { id, data, hora, rodada, gestor, produtos:[], resumo:{} } ] }
+let HISTORICO = DB.load('historico', {});
+
+const ADMIN_SENHA = 'seleto10k';
+let currentUser = null, currentProducts = [], resultadoAll = [];
+let selectedFile = null, currentRecontagem = false, contagem_anterior = null;
+
+function saveState() {
+  // Não salva os produtos NIG no localStorage (muito grande), restaura do código
+  const lojasSave = {};
+  Object.entries(LOJAS).forEach(([id,l]) => {
+    lojasSave[id] = { ...l, produtos: id==='nova-iguacu' ? [] : l.produtos };
+  });
+  DB.save('lojas', lojasSave);
+  DB.save('historico', HISTORICO);
+}
+
+// ── TELAS ───────────────────────────────────────────────────────
+function showScreen(id) {
+  ['screen-login','screen-admin','screen-gestor','screen-resultado','screen-analise','screen-historico','screen-recontagem'].forEach(s => {
+    const el=document.getElementById(s); if(!el) return;
+    el.style.display='none'; el.classList.add('hidden');
+  });
+  const el=document.getElementById(id); if(!el) return;
+  el.classList.remove('hidden');
+  el.style.display=(id==='screen-login'||id==='screen-admin')?'flex':'block';
+}
+
+function logout() {
+  currentUser=null; currentProducts=[]; currentRecontagem=false; contagem_anterior=null;
+  document.getElementById('login-senha').value='';
+  document.getElementById('login-error').style.display='none';
+  showScreen('screen-login');
+}
+
+// ── SELECTS ─────────────────────────────────────────────────────
+function populateSelects() {
+  const ids=Object.keys(LOJAS);
+  document.getElementById('login-loja').innerHTML='<option value="">Selecione a loja...</option>'+
+    ids.map(id=>`<option value="${id}">${LOJAS[id].nome}</option>`).join('')+
+    '<option value="admin">Administrador</option>';
+  const up=document.getElementById('upload-loja');
+  if(up) up.innerHTML='<option value="">Selecionar loja...</option>'+
+    ids.map(id=>`<option value="${id}">${LOJAS[id].nome}</option>`).join('');
+}
+
+// ── LOGIN ───────────────────────────────────────────────────────
+function doLogin() {
+  const loja=document.getElementById('login-loja').value;
+  const senha=document.getElementById('login-senha').value.trim();
+  const err=document.getElementById('login-error');
+  err.style.display='none';
+  if(!loja){err.style.display='block';err.textContent='Selecione uma loja.';return;}
+  if(loja==='admin'){
+    if(senha!==ADMIN_SENHA){err.style.display='block';err.textContent='Senha incorreta.';return;}
+    currentUser={loja:'admin',nome:'Admin'}; showAdminScreen(); return;
+  }
+  const l=LOJAS[loja];
+  if(!l){err.style.display='block';err.textContent='Loja não encontrada.';return;}
+  if(senha!==l.senha){err.style.display='block';err.textContent='Senha incorreta.';return;}
+  if(!l.state.active||l.produtos.length===0){
+    err.style.display='block';
+    err.textContent=l.produtos.length===0?'Nenhuma planilha carregada.':'Contagem não ativada ainda.';
+    return;
+  }
+  currentUser={loja,nome:l.nome}; showGestorScreen(loja,l.produtos,false);
+}
+document.getElementById('login-senha').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+// ── ADMIN ───────────────────────────────────────────────────────
+function showAdminScreen() { populateSelects(); renderStoreStatus(); renderLojasCadastradas(); switchTab('tab-lojas',document.querySelectorAll('.admin-tab')[0]); showScreen('screen-admin'); }
+
+function switchTab(tabId,btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active'); btn.classList.add('active');
+}
+
+function renderStoreStatus() {
+  document.getElementById('store-status-grid').innerHTML=Object.entries(LOJAS).map(([id,l])=>{
+    const st=l.state; let dotClass='',info=l.produtos.length>0?`${l.produtos.length} produtos carregados`:'Sem produtos';
+    if(st.active){dotClass='yellow';info=`${l.produtos.length} produtos · aguardando gestor`;}
+    if(st.completed){dotClass='green';info='Contagem concluída';}
+    const hist=(HISTORICO[id]||[]).length;
+    if(hist>0) info+=` · ${hist} contagem(ns) no histórico`;
+    const btns=[];
+    if(l.produtos.length>0&&!st.active&&!st.completed) btns.push(`<button class="btn-sm" onclick="quickActivate('${id}')">Ativar</button>`);
+    if(st.completed) btns.push(`<button class="btn-sm" onclick="verResultadoAdmin('${id}')">Ver resultado</button>`);
+    if(hist>0) btns.push(`<button class="btn-sm" onclick="verHistorico('${id}')">Histórico</button>`);
+    if(st.active||st.completed) btns.push(`<button class="btn-sm danger" onclick="resetStore('${id}')">Resetar</button>`);
+    return `<div class="store-row"><div class="store-row-left"><div class="store-name">${l.nome}</div><div class="store-info">${info}</div></div><div class="store-actions">${btns.join('')}</div><div class="store-dot ${dotClass}" style="margin-left:8px"></div></div>`;
+  }).join('');
+}
+
+function quickActivate(id){LOJAS[id].state.active=true;LOJAS[id].state.completed=false;saveState();renderStoreStatus();}
+function resetStore(id){LOJAS[id].state.active=false;LOJAS[id].state.completed=false;LOJAS[id].state.resultados=null;saveState();renderStoreStatus();}
+
+function verResultadoAdmin(id) {
+  currentUser={loja:id,nome:LOJAS[id].nome};
+  resultadoAll=LOJAS[id].state.resultados||[];
+  renderResultado(id,resultadoAll);
+}
+
+function onFileSelected(input){selectedFile=input.files[0];document.getElementById('file-name').textContent=selectedFile?selectedFile.name:'';}
+
+function uploadAndActivate() {
+  const loja=document.getElementById('upload-loja').value,msg=document.getElementById('upload-msg');
+  if(!loja){setMsg(msg,'Selecione uma loja.',false);return;}
+  if(!selectedFile){setMsg(msg,'Selecione o arquivo.',false);return;}
+  setMsg(msg,'Lendo arquivo...',null);
+  const ext=selectedFile.name.split('.').pop().toLowerCase();
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      let wb;
+      if(ext==='csv') wb=XLSX.read(e.target.result,{type:'string'});
+      else wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:null});
+      const products=parsePDVSheet(raw);
+      if(products.length===0){setMsg(msg,'Nenhum produto encontrado.',false);return;}
+      LOJAS[loja].produtos=products; LOJAS[loja].state.active=true; LOJAS[loja].state.completed=false; LOJAS[loja].state.resultados=null;
+      saveState();
+      setMsg(msg,`✓ ${products.length} produtos carregados para ${LOJAS[loja].nome}.`,true);
+      selectedFile=null; document.getElementById('file-name').textContent=''; document.getElementById('file-input').value='';
+      populateSelects(); renderStoreStatus();
+    }catch(err){setMsg(msg,'Erro: '+err.message,false);}
+  };
+  if(ext==='csv') reader.readAsText(selectedFile,'UTF-8'); else reader.readAsArrayBuffer(selectedFile);
+}
+
+function parsePDVSheet(raw) {
+  const products=[]; let cGrupo='',cMarca='';
+  let colContada=23,colEstoque=26,colDiferenca=29;
+  for(let i=0;i<Math.min(10,raw.length);i++){
+    const row=raw[i]; if(!row) continue;
+    for(let j=0;j<row.length;j++){
+      const v=row[j]!=null?String(row[j]).trim():'';
+      if(v==='Contada') colContada=j;
+      else if(v==='Estoque') colEstoque=j;
+      else if(v==='Diferença'||v==='Diferenca') colDiferenca=j;
+    }
+  }
+  for(const row of raw){
+    if(!row) continue;
+    const c2=row[2]!=null?String(row[2]).trim():'';
+    const c6=row[6]!=null?String(row[6]).trim():'';
+    const c10=row[10]!=null?String(row[10]).trim():'';
+    if(c6&&!c2&&c6!=='Grupo de produtos') cGrupo=c6;
+    if(c10&&!c2&&c10!=='Marca') cMarca=c10;
+    if(/^\d{6}$/.test(c2)){
+      const contada=row[colContada]!=null&&!isNaN(Number(row[colContada]))?Number(row[colContada]):null;
+      const estoque=row[colEstoque]!=null&&!isNaN(Number(row[colEstoque]))?Number(row[colEstoque]):null;
+      const diferenca=row[colDiferenca]!=null&&!isNaN(Number(row[colDiferenca]))?Number(row[colDiferenca]):null;
+      products.push({ref:c2,grupo:cGrupo,marca:cMarca,descricao:row[12]!=null?String(row[12]).trim():'',cor:row[14]!=null?String(row[14]).trim():'',tamanho:row[18]!=null?String(row[18]).trim():'',contada,estoque,diferenca});
+    }
+  }
+  return products;
+}
+
+function addNewLoja() {
+  const nome=document.getElementById('new-loja-nome').value.trim();
+  const id=document.getElementById('new-loja-id').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'');
+  const senha=document.getElementById('new-loja-senha').value.trim();
+  const msg=document.getElementById('new-loja-msg');
+  if(!nome||!id||!senha){setMsg(msg,'Preencha todos os campos.',false);return;}
+  if(LOJAS[id]||id==='admin'){setMsg(msg,'Este ID já existe.',false);return;}
+  LOJAS[id]={nome,senha,produtos:[],state:{active:false,completed:false,resultados:null}};
+  setMsg(msg,`✓ Loja "${nome}" cadastrada.`,true);
+  document.getElementById('new-loja-nome').value=''; document.getElementById('new-loja-id').value=''; document.getElementById('new-loja-senha').value='';
+  saveState(); populateSelects(); renderStoreStatus(); renderLojasCadastradas();
+}
+
+function renderLojasCadastradas() {
+  document.getElementById('lojas-cadastradas-list').innerHTML=Object.entries(LOJAS).map(([id,l])=>`
+    <div class="store-row" style="margin-bottom:6px">
+      <div class="store-row-left"><div class="store-name">${l.nome}</div><div class="store-info">ID: <span class="mono">${id}</span> · Senha: <span class="mono">${l.senha}</span></div></div>
+      <button class="btn-sm danger" onclick="removeLoja('${id}')">Remover</button>
+    </div>`).join('');
+}
+
+function removeLoja(id){if(!confirm(`Remover "${LOJAS[id].nome}"?`))return;delete LOJAS[id];delete HISTORICO[id];saveState();populateSelects();renderStoreStatus();renderLojasCadastradas();}
+function setMsg(el,txt,ok){el.textContent=txt;el.className='msg'+(ok===true?' ok':ok===false?' err':'');}
+
+// ── GESTOR ──────────────────────────────────────────────────────
+function showGestorScreen(loja, products, isRecontagem) {
+  currentProducts=products; currentRecontagem=isRecontagem;
+  const rodada=(HISTORICO[loja]||[]).length+1;
+  document.getElementById('gestor-store-label').textContent=LOJAS[loja].nome.toUpperCase();
+  document.getElementById('gestor-rodada').textContent=isRecontagem?`Recontagem #${rodada}`:`Contagem #${rodada}`;
+  document.getElementById('total-count').textContent=products.length;
+  document.getElementById('filled-count').textContent='0';
+  document.getElementById('progress-text').textContent=`0 / ${products.length}`;
+  document.getElementById('progress-bar').style.width='0%';
+  renderGestorProducts(products); showScreen('screen-gestor'); updateProgress();
+}
+
+function renderGestorProducts(products) {
+  const groups=[],gmap={};
+  products.forEach((p,idx)=>{
+    const key=`${p.grupo}||${p.marca}`;
+    if(!gmap[key]){gmap[key]={grupo:p.grupo,marca:p.marca,items:[]};groups.push(gmap[key]);}
+    gmap[key].items.push({...p,idx});
+  });
+  document.getElementById('gestor-body').innerHTML=
+    `<div class="col-header" style="margin-left:-12px;margin-right:-12px;width:calc(100% + 24px)">
+      <span>Ref.</span><span>Produto</span><span class="col-center">Tam.</span>
+      <span class="col-center">Físico</span><span class="col-center">Sistema</span>
+    </div>`+
+    groups.map(g=>`
+    <div class="group-block">
+      <div class="group-title">${g.grupo}<span class="group-marca">${g.marca}</span></div>
+      ${g.items.map(p=>`
+        <div class="product-row" id="prow-${p.idx}">
+          <span class="prod-ref">${p.ref}</span>
+          <div><div class="prod-desc">${p.descricao}</div><div class="prod-cor">${p.cor}</div></div>
+          <div class="prod-tam">${p.tamanho}</div>
+          <input class="prod-input" type="number" min="0" id="fisico-${p.idx}" placeholder="—" oninput="onInputChange(${p.idx})">
+          <input class="prod-input" type="number" min="0" id="sistema-${p.idx}" placeholder="—" oninput="onInputChange(${p.idx})">
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function onInputChange(idx) {
+  const f=document.getElementById(`fisico-${idx}`).value,s=document.getElementById(`sistema-${idx}`).value;
+  const row=document.getElementById(`prow-${idx}`);
+  row.classList.remove('filled','has-diverg');
+  updateProgress();
+}
+
+function updateProgress() {
+  const total=currentProducts.length; let filled=0;
+  currentProducts.forEach((_,idx)=>{
+    const f=document.getElementById(`fisico-${idx}`)?.value,s=document.getElementById(`sistema-${idx}`)?.value;
+    if(f!=null&&f!==''&&s!=null&&s!=='') filled++;
+  });
+  document.getElementById('filled-count').textContent=filled;
+  document.getElementById('progress-text').textContent=`${filled} / ${total}`;
+  document.getElementById('progress-bar').style.width=`${total>0?filled/total*100:0}%`;
+  document.getElementById('submit-btn').disabled=filled===0;
+}
+
+function printLista() {
+  const loja=currentUser?.loja,nomeLoja=loja?LOJAS[loja]?.nome:'Loja';
+  const data=new Date().toLocaleDateString('pt-BR'),hora=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const groups=[],gmap={};
+  currentProducts.forEach((p,idx)=>{
+    const key=`${p.grupo}||${p.marca}`;
+    if(!gmap[key]){gmap[key]={grupo:p.grupo,marca:p.marca,items:[]};groups.push(gmap[key]);}
+    gmap[key].items.push({...p,idx});
+  });
+  const groupsHTML=groups.map(g=>`<div class="pdf-group"><div class="pdf-group-header"><span class="pdf-grupo">${g.grupo}</span><span class="pdf-marca">${g.marca}</span></div><table class="pdf-table"><thead><tr><th class="col-ref">Ref.</th><th class="col-prod">Produto</th><th class="col-cor">Cor</th><th class="col-tam">Tam.</th><th class="col-count">Físico</th><th class="col-count">Sistema</th></tr></thead><tbody>${g.items.map(p=>`<tr><td class="col-ref mono">${p.ref}</td><td class="col-prod">${p.descricao}</td><td class="col-cor">${p.cor}</td><td class="col-tam mono">${p.tamanho}</td><td class="col-count"><div class="blank-box"></div></td><td class="col-count"><div class="blank-box"></div></td></tr>`).join('')}</tbody></table></div>`).join('');
+  const rodada=document.getElementById('gestor-rodada').textContent;
+  const printHTML='<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>SELETO '+nomeLoja+'</title><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;background:#fff;color:#0A0A0A;font-size:10px;}.no-print{position:fixed;top:12px;right:12px;z-index:9999;}.btn-imp{background:#0A0A0A;color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;}.page{padding:15mm 12mm;}.pdf-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #0A0A0A;}.pdf-logo{font-size:22px;font-weight:700;letter-spacing:0.12em;}.pdf-title{font-size:11px;color:#555;margin-top:3px;}.pdf-meta{text-align:right;}.pdf-meta-loja{font-size:14px;font-weight:700;}.pdf-meta-info{font-size:10px;color:#777;margin-top:2px;}.pdf-instructions{background:#F5F5F5;border-left:3px solid #0A0A0A;padding:7px 11px;margin-bottom:16px;font-size:10px;color:#555;}.pdf-group{margin-bottom:16px;page-break-inside:avoid;}.pdf-group-header{display:flex;align-items:center;gap:8px;padding:4px 8px;background:#0A0A0A;color:#fff;border-radius:3px;margin-bottom:5px;}.pdf-grupo{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}.pdf-marca{font-size:9px;background:rgba(255,255,255,0.15);padding:1px 7px;border-radius:10px;}.pdf-table{width:100%;border-collapse:collapse;}.pdf-table th{background:#F0F0F0;padding:4px 6px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;color:#555;border-bottom:1.5px solid #CCC;}.pdf-table td{padding:4px 6px;border-bottom:1px solid #E8E8E8;vertical-align:middle;}.col-ref{width:52px;}.col-cor{width:108px;}.col-tam{width:40px;text-align:center;}.col-count{width:64px;text-align:center;}.blank-box{width:50px;height:18px;border:1.5px solid #999;border-radius:2px;margin:0 auto;}.mono{font-family:"Courier New",monospace;font-size:9px;}.pdf-sign{display:flex;gap:32px;margin-top:20px;padding-top:12px;border-top:1px solid #DDD;}.pdf-sign-box{flex:1;border-top:1.5px solid #0A0A0A;padding-top:4px;font-size:9px;color:#555;margin-top:8px;}.pdf-footer{margin-top:12px;display:flex;justify-content:space-between;font-size:8px;color:#AAA;}@media print{.no-print{display:none!important;}body{margin:0;}.page{padding:12mm 10mm;}}</style></head><body><div class="no-print"><button class="btn-imp" onclick="window.print()">🖨 Imprimir / Salvar PDF</button></div><div class="page"><div class="pdf-header"><div><div class="pdf-logo">SELETO</div><div class="pdf-title">Lista de Conferência de Inventário — '+rodada+'</div></div><div class="pdf-meta"><div class="pdf-meta-loja">'+nomeLoja+'</div><div class="pdf-meta-info">'+data+' · '+hora+' · '+currentProducts.length+' produtos</div></div></div><div class="pdf-instructions">Preencha os campos <strong>Físico</strong> e <strong>Sistema</strong> para cada produto.</div>'+groupsHTML+'<div class="pdf-sign"><div class="pdf-sign-box">Responsável pela contagem</div><div class="pdf-sign-box">Conferido por (gestor)</div><div class="pdf-sign-box">Data / Hora</div></div><div class="pdf-footer"><span>SELETO — Uso interno</span><span>Gerado em '+data+' às '+hora+'</span></div></div><scr'+'ipt>window.addEventListener("load",function(){setTimeout(function(){window.print();},600);});<'+'/scr'+'ipt></body></html>';
+  const win=window.open('','_blank');
+  if(!win){alert('Permita popups e tente novamente.');return;}
+  win.document.open(); win.document.write(printHTML); win.document.close();
+}
+
+// ── SUBMIT ──────────────────────────────────────────────────────
+function submitContagem() {
+  const loja=currentUser.loja;
+  const now=new Date();
+  const resultados=currentProducts.map((p,idx)=>{
+    const fv=document.getElementById(`fisico-${idx}`)?.value,sv=document.getElementById(`sistema-${idx}`)?.value;
+    const f=fv!=null&&fv!==''?parseInt(fv):null,s=sv!=null&&sv!==''?parseInt(sv):null;
+    return {...p,fisico:f,sistema:s,diverg:(f!=null&&s!=null)?f-s:null};
+  });
+
+  // Salvar no histórico
+  if(!HISTORICO[loja]) HISTORICO[loja]=[];
+  const rodada=HISTORICO[loja].length+1;
+  const entrada={
+    id: `${loja}_${Date.now()}`,
+    rodada,
+    tipo: currentRecontagem?'recontagem':'contagem',
+    data: now.toLocaleDateString('pt-BR'),
+    hora: now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    dataISO: now.toISOString(),
+    gestor: LOJAS[loja].nome,
+    totalProdutos: resultados.length,
+    resumo: {
+      conferidos: resultados.filter(r=>r.diverg!=null).length,
+      faltando: resultados.filter(r=>r.diverg!=null&&r.diverg<0).length,
+      sobrando: resultados.filter(r=>r.diverg!=null&&r.diverg>0).length,
+      saldo: resultados.filter(r=>r.diverg!=null).reduce((a,r)=>a+(r.diverg||0),0)
+    },
+    produtos: resultados
+  };
+  HISTORICO[loja].push(entrada);
+
+  // Atualizar estado da loja
+  LOJAS[loja].state.completed=true; LOJAS[loja].state.active=false; LOJAS[loja].state.resultados=resultados;
+  resultadoAll=resultados;
+  saveState();
+  renderResultado(loja,resultados,rodada);
+}
+
+// ── RESULTADO ───────────────────────────────────────────────────
+let _rodadaAtual=1;
+function renderResultado(loja,resultados,rodada) {
+  _rodadaAtual=rodada||1;
+  resultadoAll=resultados;
+  document.getElementById('resultado-store-badge').textContent=LOJAS[loja].nome.toUpperCase();
+  document.getElementById('resultado-rodada').textContent=`Rodada #${_rodadaAtual}`;
+  document.getElementById('resultado-date').textContent=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  const pre=resultados.filter(r=>r.diverg!=null);
+  const neg=pre.filter(r=>r.diverg<0).length,pos=pre.filter(r=>r.diverg>0).length;
+  const tot=pre.reduce((a,r)=>a+(r.diverg||0),0);
+  document.getElementById('resultado-summary').innerHTML=`
+    <div class="summary-card"><div class="summary-value mono">${pre.length}</div><div class="summary-label">Conferidos</div></div>
+    <div class="summary-card red"><div class="summary-value red mono">${neg}</div><div class="summary-label">Faltando (−)</div></div>
+    <div class="summary-card green"><div class="summary-value green mono">${pos}</div><div class="summary-label">Sobrando (+)</div></div>
+    <div class="summary-card ${tot<0?'red':tot>0?'yellow':''}"><div class="summary-value ${tot<0?'red':tot>0?'yellow':''} mono">${tot>0?'+':''}${tot}</div><div class="summary-label">Saldo total</div></div>`;
+  renderResultadoTable(pre,'all');
+  document.getElementById('recontagem-selecionados').textContent='0 selecionados';
+  showScreen('screen-resultado');
+}
+
+let _filtroAtivo='all';
+function renderResultadoTable(data,filter) {
+  _filtroAtivo=filter; let rows=data;
+  if(filter==='neg') rows=data.filter(r=>r.diverg<0);
+  else if(filter==='pos') rows=data.filter(r=>r.diverg>0);
+  else if(filter==='zero') rows=data.filter(r=>r.diverg===0);
+  document.getElementById('resultado-tbody').innerHTML=rows.map((r,i)=>{
+    const d=r.diverg;
+    const badge=d==null?'':d<0?`<span class="badge-diverg badge-neg">${d}</span>`:d>0?`<span class="badge-diverg badge-pos">+${d}</span>`:`<span class="badge-diverg badge-zero">—</span>`;
+    const key=`${r.ref}|${r.cor}|${r.tamanho}`;
+    return `<tr id="tr-${encodeKey(key)}" class="${recontagemSelecionados.has(key)?'row-selected':''}">
+      <td><input type="checkbox" class="rc-check" onchange="toggleRecontagem('${key.replace(/'/g,"\\'")}',this)" ${recontagemSelecionados.has(key)?'checked':''}></td>
+      <td class="mono" style="font-size:12px;color:var(--grey-400)">${r.ref}</td>
+      <td style="font-size:12px;color:var(--grey-600)">${r.grupo}</td>
+      <td style="font-size:12px;font-weight:500">${r.marca}</td>
+      <td>${r.descricao}</td>
+      <td style="font-size:12px;color:var(--grey-600)">${r.cor}</td>
+      <td class="center mono">${r.tamanho}</td>
+      <td class="center mono">${r.fisico??'—'}</td>
+      <td class="center mono">${r.sistema??'—'}</td>
+      <td class="center">${badge}</td>
+    </tr>`;
+  }).join('');
+}
+
+function encodeKey(k){return k.replace(/[^a-zA-Z0-9]/g,'_');}
+
+function filterResultado(type,btn) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderResultadoTable(resultadoAll.filter(r=>r.diverg!=null),type);
+}
+
+// ── RECONTAGEM ──────────────────────────────────────────────────
+let recontagemSelecionados=new Set();
+
+function toggleRecontagem(key,cb) {
+  if(cb.checked) recontagemSelecionados.add(key);
+  else recontagemSelecionados.delete(key);
+  const tr=document.getElementById('tr-'+encodeKey(key));
+  if(tr) tr.classList.toggle('row-selected',cb.checked);
+  document.getElementById('recontagem-selecionados').textContent=
+    recontagemSelecionados.size>0?`${recontagemSelecionados.size} selecionado(s)`:'0 selecionados';
+  document.getElementById('btn-iniciar-recontagem').disabled=recontagemSelecionados.size===0;
+}
+
+function iniciarRecontagem() {
+  if(recontagemSelecionados.size===0){alert('Selecione pelo menos um produto para recontar.');return;}
+  const loja=currentUser.loja;
+  const produtos=resultadoAll.filter(r=>{
+    const key=`${r.ref}|${r.cor}|${r.tamanho}`;
+    return recontagemSelecionados.has(key);
+  });
+  contagem_anterior=resultadoAll;
+  recontagemSelecionados=new Set();
+  LOJAS[loja].state.active=true; LOJAS[loja].state.completed=false;
+  saveState();
+  showGestorScreen(loja,produtos,true);
+}
+
+function novaContagem(){recontagemSelecionados=new Set();logout();}
+
+// ── HISTÓRICO ───────────────────────────────────────────────────
+let _historicoLoja=null;
+function verHistorico(lojaId) {
+  _historicoLoja=lojaId;
+  const hist=HISTORICO[lojaId]||[];
+  document.getElementById('historico-store-badge').textContent=LOJAS[lojaId].nome.toUpperCase();
+  document.getElementById('historico-body').innerHTML=hist.length===0
+    ? '<div style="text-align:center;padding:60px;color:var(--grey-400)">Nenhuma contagem registrada ainda.</div>'
+    : hist.slice().reverse().map(c=>`
+      <div class="hist-card">
+        <div class="hist-card-header" onclick="toggleHistDetail('${c.id}')">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+              <span class="hist-tag ${c.tipo==='recontagem'?'recon':''}">${c.tipo==='recontagem'?'↺ Recontagem':'📋 Contagem'} #${c.rodada}</span>
+              <span style="font-size:12px;color:var(--grey-400)">${c.data} às ${c.hora}</span>
+            </div>
+            <div style="display:flex;gap:16px;font-size:13px">
+              <span>${c.totalProdutos} produtos</span>
+              <span style="color:var(--red)">${c.resumo.faltando} faltando</span>
+              <span style="color:var(--green)">${c.resumo.sobrando} sobrando</span>
+              <span style="font-weight:600">Saldo: ${c.resumo.saldo>0?'+':''}${c.resumo.saldo}</span>
+            </div>
+          </div>
+          <span class="hist-expand-icon">▾</span>
+        </div>
+        <div class="hist-detail" id="detail-${c.id}" style="display:none">
+          <table class="resultado-table" style="margin-top:12px">
+            <thead><tr>
+              <th>Ref.</th><th>Produto</th><th>Cor</th><th class="center">Tam.</th>
+              <th class="center">Físico</th><th class="center">Sistema</th><th class="center">Divergência</th>
+            </tr></thead>
+            <tbody>${c.produtos.map(p=>{
+              const d=p.diverg;
+              const badge=d==null?'':d<0?`<span class="badge-diverg badge-neg">${d}</span>`:d>0?`<span class="badge-diverg badge-pos">+${d}</span>`:`<span class="badge-diverg badge-zero">—</span>`;
+              return `<tr><td class="mono" style="font-size:11px;color:var(--grey-400)">${p.ref}</td><td style="font-size:12px">${p.descricao}</td><td style="font-size:11px;color:var(--grey-600)">${p.cor}</td><td class="center mono">${p.tamanho}</td><td class="center mono">${p.fisico??'—'}</td><td class="center mono">${p.sistema??'—'}</td><td class="center">${badge}</td></tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+      </div>`).join('');
+  showScreen('screen-historico');
+}
+
+function toggleHistDetail(id) {
+  const el=document.getElementById('detail-'+id);
+  if(el) el.style.display=el.style.display==='none'?'block':'none';
+}
+
+// ── ANÁLISE IA ──────────────────────────────────────────────────
+function iniciarAnaliseIA() {
+  const loja=currentUser?.loja;
+  document.getElementById('analise-store-badge').textContent=LOJAS[loja]?.nome?.toUpperCase()||'';
+  showScreen('screen-analise');
+  document.getElementById('analise-loading').style.display='block';
+  document.getElementById('analise-content').innerHTML='';
+  let prog=0; const bar=document.getElementById('analise-progress-bar');
+  const interval=setInterval(()=>{prog=Math.min(prog+2,90);bar.style.width=prog+'%';},200);
+  chamarIA(resultadoAll).then(analise=>{
+    clearInterval(interval); bar.style.width='100%';
+    setTimeout(()=>{document.getElementById('analise-loading').style.display='none';renderAnalise(analise);},400);
+  }).catch(err=>{
+    clearInterval(interval);
+    document.getElementById('analise-loading').style.display='none';
+    document.getElementById('analise-content').innerHTML=`<div class="analise-card alert"><div class="analise-produto">Erro ao conectar com a IA</div><div class="analise-diagnostico">${err.message}</div></div>`;
+  });
+}
+
+async function chamarIA(dados) {
+  const prompt=`Você é um especialista em gestão de estoque de varejo de moda/streetwear da SELETO, rede de lojas no Rio de Janeiro.
+
+PROCESSO DE INVENTÁRIO DA SELETO:
+1. Empresa terceirizada conta o estoque (campo contada) e compara com sistema (campo estoque). Diferença em: diferenca.
+2. Gestor da loja faz recontagem manual (campo fisico) e verifica sistema atual (campo sistema). Divergência: diverg (fisico - sistema).
+3. Objetivo: identificar o que causou cada divergência e recomendar ação de ajuste de estoque.
+
+REGRAS:
+- "OK": fisico === sistema
+- "TROCA_TAMANHO": mesma ref, tamanhos/cores diferentes, divergências opostas que somam zero (ex: M com +1 e GG com -1 na mesma ref)
+- "TROCA_PRODUTO": mesmo nome mas refs diferentes, divergências opostas
+- "RECONTAR": gestor confirmou erro do inventário OU divergência inexplicável que precisa de verificação
+- "DIVERGENCIA": divergência real — negativo pode ser furto/venda sem baixa, positivo pode ser entrada sem registro
+
+DADOS:
+${JSON.stringify(dados.filter(p=>p.diverg!==0||p.diferenca!==0||(p.fisico!=null&&p.sistema!=null&&p.fisico!==p.sistema)),null,2)}
+
+Responda SOMENTE com JSON válido sem markdown:
+{"resumo":{"total_analisados":0,"sem_divergencia":0,"trocas_identificadas":0,"divergencias_reais":0,"recontar":0},"produtos":[{"ref":"","descricao":"","cor":"","tamanho":"","tipo":"OK","diagnostico":"","acao":"","acao_tipo":"ok","quantidade_ajuste":0,"par_ref":null,"sugerir_recontagem":false}]}`;
+
+  const response=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:4000,messages:[{role:'user',content:prompt}]})});
+  if(!response.ok) throw new Error(`Erro ${response.status}: ${response.statusText}`);
+  const data=await response.json();
+  return JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());
+}
+
+function renderAnalise(analise) {
+  const r=analise.resumo;
+  // Auto-selecionar produtos que a IA sugeriu recontar
+  let autoSelecionados=0;
+  analise.produtos.forEach(p=>{
+    if(p.sugerir_recontagem||p.tipo==='RECONTAR'){
+      const key=`${p.ref}|${p.cor}|${p.tamanho}`;
+      recontagemSelecionados.add(key); autoSelecionados++;
+    }
+  });
+
+  const alertaRecontar=autoSelecionados>0?`
+    <div class="analise-card warn" style="margin-bottom:20px">
+      <div style="font-weight:600;margin-bottom:4px">🔁 IA sugeriu recontagem para ${autoSelecionados} produto(s)</div>
+      <div style="font-size:13px;color:var(--grey-600)">Volte ao resultado — os produtos já estão marcados. Clique em "Iniciar Recontagem" para enviar ao gestor.</div>
+      <button onclick="voltarResultado()" style="margin-top:10px;background:var(--yellow);color:var(--black);border:none;border-radius:var(--radius);padding:8px 16px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;cursor:pointer">← Voltar ao resultado</button>
+    </div>`:'';
+
+  const resumoHTML=`<div class="analise-resumo">
+    <div class="summary-card"><div class="summary-value mono">${r.total_analisados}</div><div class="summary-label">Analisados</div></div>
+    <div class="summary-card green"><div class="summary-value green mono">${r.sem_divergencia}</div><div class="summary-label">OK</div></div>
+    <div class="summary-card" style="border-color:#C8E0FF;background:#F0F6FF"><div class="summary-value mono" style="color:#2A5FCC">${r.trocas_identificadas}</div><div class="summary-label">Trocas</div></div>
+    <div class="summary-card red"><div class="summary-value red mono">${r.divergencias_reais}</div><div class="summary-label">Divergências</div></div>
+  </div>`;
+
+  const produtosHTML=analise.produtos.map(p=>{
+    const cardClass=p.tipo==='OK'?'ok':p.tipo==='RECONTAR'?'warn':p.tipo.includes('TROCA')?'info':'alert';
+    const tagClass=p.tipo==='OK'?'ok':p.tipo==='RECONTAR'?'recontar':p.tipo.includes('TROCA')?'troca':'divergencia';
+    const tagLabel={'OK':'✓ Correto','TROCA_TAMANHO':'⇄ Troca de Tamanho','TROCA_PRODUTO':'⇄ Troca de Produto','DIVERGENCIA':'⚠ Divergência Real','RECONTAR':'↺ Recontar'}[p.tipo]||p.tipo;
+    const reconBtn=p.sugerir_recontagem||p.tipo==='RECONTAR'?`<span style="font-size:11px;background:var(--yellow);color:var(--black);padding:2px 8px;border-radius:10px;font-weight:600;margin-left:8px">marcado para recontar</span>`:'';
+    return `<div class="analise-card ${cardClass}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span class="analise-tag ${tagClass}">${tagLabel}</span>${reconBtn}
+      </div>
+      <div class="analise-produto">${p.descricao}</div>
+      <div class="analise-meta"><span class="mono">${p.ref}</span><span>${p.cor}</span><span>Tam. ${p.tamanho}</span>${p.par_ref?`<span style="color:#7B4FCC">Par: ref ${p.par_ref}</span>`:''}</div>
+      <div class="analise-diagnostico">${p.diagnostico}</div>
+      ${p.tipo!=='OK'?`<div class="analise-acao ${p.acao_tipo}">${p.acao}</div>`:''}
+    </div>`;
+  }).join('');
+  document.getElementById('analise-content').innerHTML=alertaRecontar+resumoHTML+produtosHTML;
+  // Update recontagem counter on resultado screen
+  if(autoSelecionados>0) document.getElementById('recontagem-selecionados').textContent=`${recontagemSelecionados.size} selecionado(s)`;
+}
+
+function voltarResultado(){showScreen('screen-resultado');}
+
+// ── INIT ────────────────────────────────────────────────────────
+populateSelects();
+showScreen('screen-login');
+
+</script>
+</body>
+</html>
