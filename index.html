@@ -487,7 +487,7 @@ function renderStoreStatus() {
     if(hist>0) info+=` · ${hist} contagem(ns) no histórico`;
     const btns=[];
     if(l.produtos.length>0&&!st.active&&!st.completed) btns.push(`<button class="btn-sm" onclick="quickActivate('${id}')">Ativar</button>`);
-    if(st.completed) btns.push(`<button class="btn-sm" onclick="verResultadoAdmin('${id}')">Ver resultado</button>`);
+    if(hist>0) btns.push(`<button class="btn-sm" onclick="verResultadoAdmin('${id}')">Ver resultado</button>`);
     if(hist>0) btns.push(`<button class="btn-sm" onclick="verHistorico('${id}')">Histórico</button>`);
     if(st.active||st.completed) btns.push(`<button class="btn-sm danger" onclick="resetStore('${id}')">Resetar</button>`);
     return `<div class="store-row"><div class="store-row-left"><div class="store-name">${l.nome}</div><div class="store-info">${info}</div></div><div class="store-actions">${btns.join('')}</div><div class="store-dot ${dotClass}" style="margin-left:8px"></div></div>`;
@@ -509,8 +509,11 @@ async function resetStore(id){
 
 function verResultadoAdmin(id) {
   currentUser={loja:id,nome:LOJAS[id].nome,viewingAsAdmin:true};
-  resultadoAll=LOJAS[id].state.resultados||[];
-  renderResultado(id,resultadoAll);
+  const hist=HISTORICO[id]||[];
+  if(hist.length===0){ alert('Nenhuma contagem registrada ainda para essa loja.'); currentUser=null; return; }
+  const ultima=hist[hist.length-1];
+  resultadoAll=ultima.produtos;
+  renderResultado(id,resultadoAll,ultima.rodada);
 }
 
 function onFileSelected(input){selectedFile=input.files[0];document.getElementById('file-name').textContent=selectedFile?selectedFile.name:'';}
@@ -896,6 +899,7 @@ function verHistorico(lojaId) {
           <span class="hist-expand-icon">▾</span>
         </div>
         <div class="hist-detail" id="detail-${c.id}" style="display:none">
+          <button class="btn-sm" style="margin-bottom:10px" onclick="usarContagemParaRecontagem('${lojaId}','${c.id}')">↺ Selecionar produtos para recontagem</button>
           <table class="resultado-table" style="margin-top:12px">
             <thead><tr>
               <th>Ref.</th><th>Produto</th><th>Cor</th><th class="center">Tam.</th>
@@ -910,6 +914,15 @@ function verHistorico(lojaId) {
         </div>
       </div>`).join('');
   showScreen('screen-historico');
+}
+
+function usarContagemParaRecontagem(lojaId,contagemId) {
+  const hist=HISTORICO[lojaId]||[];
+  const c=hist.find(h=>h.id===contagemId);
+  if(!c){alert('Contagem não encontrada.');return;}
+  currentUser={loja:lojaId,nome:LOJAS[lojaId].nome,viewingAsAdmin:true};
+  resultadoAll=c.produtos;
+  renderResultado(lojaId,c.produtos,c.rodada);
 }
 
 function toggleHistDetail(id) {
