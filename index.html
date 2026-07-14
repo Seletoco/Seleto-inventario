@@ -253,7 +253,7 @@
   </div>
   <div class="resultado-body">
     <div class="resultado-summary" id="resultado-summary"></div>
-    <div class="recontagem-bar">
+    <div class="recontagem-bar" id="recontagem-bar">
       <div class="rc-info">Selecione produtos na tabela para <strong>recontar</strong> · <span id="recontagem-selecionados">0 selecionados</span></div>
       <button class="btn-recontagem" id="btn-iniciar-recontagem" onclick="iniciarRecontagem()" disabled>↺ Iniciar Recontagem</button>
     </div>
@@ -386,6 +386,7 @@ async function loadAllFromSupabase() {
         ref:p.ref, grupo:p.grupo, marca:p.marca, descricao:p.descricao, cor:p.cor, tamanho:p.tamanho,
         contada:p.contada, estoque:p.estoque, diferenca:p.diferenca
       })),
+      recontagemPendente: l.recontagem_pendente || null,
       state: { active: l.active, completed: l.completed, resultados: null }
     };
   });
@@ -458,7 +459,13 @@ function doLogin() {
     err.textContent=l.produtos.length===0?'Nenhuma planilha carregada.':'Contagem não ativada ainda.';
     return;
   }
-  currentUser={loja,nome:l.nome}; showGestorScreen(loja,l.produtos,false);
+  currentUser={loja,nome:l.nome};
+  // Se existe recontagem pendente salva pelo Admin, mostra só esses produtos
+  if(l.recontagemPendente && l.recontagemPendente.length>0){
+    showGestorScreen(loja,l.recontagemPendente,true);
+  } else {
+    showGestorScreen(loja,l.produtos,false);
+  }
 }
 
 
@@ -494,9 +501,9 @@ async function quickActivate(id){
   if(error){alert('Erro ao ativar loja: '+error.message);}
 }
 async function resetStore(id){
-  LOJAS[id].state.active=false;LOJAS[id].state.completed=false;LOJAS[id].state.resultados=null;
+  LOJAS[id].state.active=false;LOJAS[id].state.completed=false;LOJAS[id].state.resultados=null;LOJAS[id].recontagemPendente=null;
   renderStoreStatus();
-  const {error}=await sb.from('lojas').update({active:false,completed:false}).eq('id',id);
+  const {error}=await sb.from('lojas').update({active:false,completed:false,recontagem_pendente:null}).eq('id',id);
   if(error){alert('Erro ao resetar loja: '+error.message);}
 }
 
@@ -751,12 +758,12 @@ async function submitContagem() {
     if(e2){alert('Erro ao salvar produtos da contagem: '+e2.message);if(submitBtn){submitBtn.disabled=false;submitBtn.textContent='Enviar Contagem';}return;}
   }
 
-  // Atualiza estado da loja
-  const {error:e3}=await sb.from('lojas').update({completed:true,active:false}).eq('id',loja);
+  // Atualiza estado da loja e limpa recontagem pendente (se houver)
+  const {error:e3}=await sb.from('lojas').update({completed:true,active:false,recontagem_pendente:null}).eq('id',loja);
   if(e3){alert('Erro ao atualizar estado da loja: '+e3.message);}
 
   HISTORICO[loja].push(entrada);
-  LOJAS[loja].state.completed=true; LOJAS[loja].state.active=false; LOJAS[loja].state.resultados=resultados;
+  LOJAS[loja].state.completed=true; LOJAS[loja].state.active=false; LOJAS[loja].state.resultados=resultados; LOJAS[loja].recontagemPendente=null;
   resultadoAll=resultados;
   renderResultado(loja,resultados,rodada);
 }
@@ -781,6 +788,9 @@ function renderResultado(loja,resultados,rodada) {
   document.getElementById('recontagem-selecionados').textContent='0 selecionados';
   const sairBtn=document.getElementById('resultado-sair-btn');
   if(sairBtn) sairBtn.textContent = (currentUser && currentUser.viewingAsAdmin) ? 'Voltar ao Painel' : 'Nova contagem';
+  const isAdmin = currentUser && currentUser.viewingAsAdmin;
+  const rcBar=document.getElementById('recontagem-bar');
+  if(rcBar) rcBar.style.display = isAdmin ? 'flex' : 'none';
   showScreen('screen-resultado');
 }
 
@@ -790,12 +800,16 @@ function renderResultadoTable(data,filter) {
   if(filter==='neg') rows=data.filter(r=>r.diverg<0);
   else if(filter==='pos') rows=data.filter(r=>r.diverg>0);
   else if(filter==='zero') rows=data.filter(r=>r.diverg===0);
+  const isAdmin = currentUser && currentUser.viewingAsAdmin;
   document.getElementById('resultado-tbody').innerHTML=rows.map((r,i)=>{
     const d=r.diverg;
     const badge=d==null?'':d<0?`<span class="badge-diverg badge-neg">${d}</span>`:d>0?`<span class="badge-diverg badge-pos">+${d}</span>`:`<span class="badge-diverg badge-zero">—</span>`;
     const key=`${r.ref}|${r.cor}|${r.tamanho}`;
+    const checkCell = isAdmin
+      ? `<td><input type="checkbox" class="rc-check" onchange="toggleRecontagem('${key.replace(/'/g,"\\'")}',this)" ${recontagemSelecionados.has(key)?'checked':''}></td>`
+      : `<td></td>`;
     return `<tr id="tr-${encodeKey(key)}" class="${recontagemSelecionados.has(key)?'row-selected':''}">
-      <td><input type="checkbox" class="rc-check" onchange="toggleRecontagem('${key.replace(/'/g,"\\'")}',this)" ${recontagemSelecionados.has(key)?'checked':''}></td>
+      ${checkCell}
       <td class="mono" style="font-size:12px;color:var(--grey-400)">${r.ref}</td>
       <td style="font-size:12px;color:var(--grey-600)">${r.grupo}</td>
       <td style="font-size:12px;font-weight:500">${r.marca}</td>
@@ -839,8 +853,8 @@ async function iniciarRecontagem() {
   });
   contagem_anterior=resultadoAll;
   recontagemSelecionados=new Set();
-  LOJAS[loja].state.active=true; LOJAS[loja].state.completed=false;
-  const {error}=await sb.from('lojas').update({active:true,completed:false}).eq('id',loja);
+  LOJAS[loja].state.active=true; LOJAS[loja].state.completed=false; LOJAS[loja].recontagemPendente=produtos;
+  const {error}=await sb.from('lojas').update({active:true,completed:false,recontagem_pendente:produtos}).eq('id',loja);
   if(error){alert('Erro ao iniciar recontagem: '+error.message);return;}
   showGestorScreen(loja,produtos,true);
 }
