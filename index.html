@@ -1265,7 +1265,10 @@
     // Credenciais vêm de /api/config (variáveis de ambiente na Vercel: SUPABASE_URL, SUPABASE_KEY)
     let sb;
     async function initSupabaseClient() {
-      const { supabaseUrl, supabaseKey } = await fetch('/api/config').then(r => r.json());
+      const res = await fetch('/api/config');
+      if (!res.ok) throw new Error(`/api/config retornou ${res.status}`);
+      const { supabaseUrl, supabaseKey } = await res.json();
+      if (!supabaseUrl || !supabaseKey) throw new Error('SUPABASE_URL/SUPABASE_KEY não configuradas na Vercel (env vars ausentes)');
       sb = supabase.createClient(supabaseUrl, supabaseKey);
     }
 
@@ -1953,7 +1956,12 @@ Responda SOMENTE com JSON válido sem markdown:
       const originalHTML = loginBox ? loginBox.innerHTML : '';
       if (loginBox) loginBox.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--grey-400);font-size:13px">Carregando dados...</div>';
       showScreen('screen-login');
-      await initSupabaseClient();
+      try {
+        await initSupabaseClient();
+      } catch (err) {
+        showLoadError('configuração do Supabase (/api/config)', err.message || err);
+        return;
+      }
       await loadAllFromSupabase();
       if (loginBox) loginBox.innerHTML = originalHTML;
       populateSelects();
