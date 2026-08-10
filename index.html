@@ -1262,9 +1262,12 @@
     // ═══════════════════════════════════════════════════════════════
 
     // ── SUPABASE CLIENT ──────────────────────────────────────────────
-    const SUPABASE_URL = 'https://zvfjmxrnamutzxhbetql.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_CDN4ILAIS6VEcou5C-0v3w_w-taeJOv';
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Credenciais vêm de /api/config (variáveis de ambiente na Vercel: SUPABASE_URL, SUPABASE_KEY)
+    let sb;
+    async function initSupabaseClient() {
+      const { supabaseUrl, supabaseKey } = await fetch('/api/config').then(r => r.json());
+      sb = supabase.createClient(supabaseUrl, supabaseKey);
+    }
 
     function showLoadError(etapa, err) {
       console.error(etapa, err);
@@ -1950,6 +1953,7 @@ Responda SOMENTE com JSON válido sem markdown:
       const originalHTML = loginBox ? loginBox.innerHTML : '';
       if (loginBox) loginBox.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--grey-400);font-size:13px">Carregando dados...</div>';
       showScreen('screen-login');
+      await initSupabaseClient();
       await loadAllFromSupabase();
       if (loginBox) loginBox.innerHTML = originalHTML;
       populateSelects();
